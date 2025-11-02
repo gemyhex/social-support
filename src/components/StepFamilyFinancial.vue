@@ -11,21 +11,21 @@
       <div v-if="capture(validate, values, setFieldTouched)" style="display: none"></div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FieldRow
+        <Field
           name="maritalStatus"
           :label="t('fields.maritalStatus')"
           type="select"
           :options="maritalOptions"
         />
-        <FieldRow name="dependents" :label="t('fields.dependents')" type="number" />
-        <FieldRow
+        <Field name="dependents" :label="t('fields.dependents')" type="number" />
+        <Field
           name="employmentStatus"
           :label="t('fields.employmentStatus')"
           type="select"
           :options="employmentOptions"
         />
-        <FieldRow name="monthlyIncome" :label="t('fields.monthlyIncome')" type="number" />
-        <FieldRow
+        <Field name="monthlyIncome" :label="t('fields.monthlyIncome')" type="number" />
+        <Field
           name="housingStatus"
           :label="t('fields.housingStatus')"
           type="select"
@@ -43,7 +43,6 @@ import { Form } from 'vee-validate'
 import * as yup from 'yup'
 import { useFormStore } from '@/stores/useFormStore'
 import { useI18n } from 'vue-i18n'
-import FieldRow from '@/components/FieldRow.vue'
 import { defineExpose } from 'vue'
 
 const store = useFormStore()

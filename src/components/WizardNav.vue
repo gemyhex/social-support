@@ -1,35 +1,12 @@
 <template>
   <div class="flex items-center justify-between mt-4">
-    <!-- Back button (hidden on step 1) -->
-    <div>
-      <BaseButton
-        v-if="step > 1"
-        variant="secondary"
-        size="sm"
-        :disabled="false"
-        @click="$emit('back')"
-        type="button"
-      >
-        {{ $t('back') }}
-      </BaseButton>
-    </div>
+    <BaseButton v-if="step > 1" variant="secondary" size="sm" @click="$emit('back')" type="button">
+      {{ $t('back') }}
+    </BaseButton>
 
-    <!-- Right side actions -->
-    <div class="flex items-center gap-2">
-      <!-- Save only shown on final step -->
+    <div class="flex items-center gap-2 ml-auto">
       <BaseButton
-        v-if="step === 3"
-        variant="secondary"
-        size="sm"
-        @click="$emit('save')"
-        type="button"
-      >
-        {{ $t('save') }}
-      </BaseButton>
-
-      <!-- Next (or Submit on final) -->
-      <BaseButton
-        v-if="step < 3"
+        v-if="!isLast"
         variant="primary"
         size="sm"
         :disabled="loading"
@@ -54,15 +31,13 @@
 </template>
 
 <script setup lang="ts">
-import BaseButton from '@/components/BaseButton.vue'
-import { defineProps } from 'vue'
+import { computed } from 'vue'
 
 const props = defineProps({
   step: { type: Number, required: true },
+  stepsCount: { type: Number, required: true },
   loading: { type: Boolean, default: false },
 })
-</script>
 
-<style scoped>
-/* keep styles minimal — BaseButton handles visuals */
-</style>
+const isLast = computed(() => props.step >= props.stepsCount)
+</script>

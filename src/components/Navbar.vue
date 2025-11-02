@@ -11,9 +11,6 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button class="px-3 py-1 rounded-md border text-sm" @click="onSave">
-          {{ $t('save') }}
-        </button>
         <select
           v-model="ui.locale"
           @change="onLocale"
@@ -32,19 +29,11 @@
 </template>
 
 <script setup lang="ts">
-import { useFormStore } from '@/stores/useFormStore'
 import { useI18n } from 'vue-i18n'
 import { useUIStore } from '@/stores/uiStore'
-import { useToast } from '@/composables/useToast'
 const ui = useUIStore()
-const form = useFormStore()
 const { locale } = useI18n()
-const { push } = useToast()
 function onLocale() {
   locale.value = ui.locale
-}
-function onSave() {
-  form.manualSave()
-  push(String((window as any).__t__('messages.saved') || 'Saved locally'), 'success', 1500)
 }
 </script>

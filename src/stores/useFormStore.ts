@@ -1,40 +1,60 @@
-import { defineStore } from 'pinia';
-import { reactive, watch } from 'vue';
+import { defineStore } from 'pinia'
+import { reactive, toRefs, watch } from 'vue'
 
-const STORAGE_KEY = 'ss_application_v1';
+const STORAGE_KEY = 'application_form_v1'
+
+const INITIAL_FORM_STATE = {
+  // personal
+  name: '',
+  nationalId: '',
+  dob: '',
+  gender: '',
+  email: '',
+  phone: '',
+  address: '',
+  // family/financial
+  maritalStatus: '',
+  dependents: 0,
+  monthlyIncome: null,
+  housingStatus: '',
+  // situation
+  currentFinancialSituation: '',
+  employmentCircumstances: '',
+  reasonForApplying: ''
+}
 
 export const useFormStore = defineStore('form', () => {
   const state = reactive({
-    activeStep: 1,
-    form: {
-      // step 1
-      name: '', nationalId: '', dob: '', gender: '', address: '', city: '', state: '', country: '', phone: '', email: '',
-      // step 2
-      maritalStatus: '', dependents: 0, employmentStatus: '', monthlyIncome: null, housingStatus: '',
-      // step 3
-      currentFinancialSituation: '', employmentCircumstances: '', reasonForApplying: ''
-    }
-  });
+    form: { ...INITIAL_FORM_STATE },
+    activeStep: 1
+  })
 
-  // persist
-  watch(() => state.form, (v) => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); } catch { }
-  }, { deep: true });
-
-  // hydratation
+  // hydrate from storage
   try {
-    const s = localStorage.getItem(STORAGE_KEY);
-    if (s) Object.assign(state.form, JSON.parse(s));
-  } catch { }
+    const s = localStorage.getItem(STORAGE_KEY)
+    if (s) {
+      Object.assign(state.form, JSON.parse(s))
+    }
+  } catch (e) { /* ignore */ }
 
-  function manualSave() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.form)); } catch { } }
-  function reset() {
-    Object.assign(state.form, {
-      name: '', nationalId: '', dob: '', gender: '', address: '', city: '', state: '', country: '', phone: '', email: '',
-      maritalStatus: '', dependents: 0, employmentStatus: '', monthlyIncome: null, housingStatus: '',
-      currentFinancialSituation: '', employmentCircumstances: '', reasonForApplying: ''
-    }); state.activeStep = 1; manualSave();
+  // auto-persist (debounce if needed)
+  watch(
+    () => state.form,
+    () => {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.form)) } catch { }
+    },
+    { deep: true }
+  )
+
+  function manualSave() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.form)) } catch { }
   }
 
-  return { ...state, manualSave, reset };
-});
+  function reset() {
+    state.form = { ...INITIAL_FORM_STATE }
+    state.activeStep = 1
+    manualSave()
+  }
+
+  return { ...toRefs(state), manualSave, reset }
+})

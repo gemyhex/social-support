@@ -12,7 +12,7 @@
 
       <div class="space-y-4">
         <div>
-          <FieldItem
+          <Field
             name="currentFinancialSituation"
             :label="t('fields.currentFinancialSituation')"
             type="textarea"
@@ -29,7 +29,7 @@
         </div>
 
         <div>
-          <FieldItem
+          <Field
             name="employmentCircumstances"
             :label="t('fields.employmentCircumstances')"
             type="textarea"
@@ -46,7 +46,7 @@
         </div>
 
         <div>
-          <FieldItem
+          <Field
             name="reasonForApplying"
             :label="t('fields.reasonForApplying')"
             type="textarea"
@@ -74,9 +74,6 @@ import { useFormStore } from '@/stores/useFormStore'
 import { useI18n } from 'vue-i18n'
 import { defineExpose } from 'vue'
 import { useApplySuggestion } from '@/composables/useApplySuggestion'
-
-import FieldItem from '@/components/FieldRow.vue'
-import BaseButton from '@/components/BaseButton.vue'
 
 const store = useFormStore()
 const { t } = useI18n()

@@ -1,52 +1,80 @@
 <template>
-  <div class="field-item">
-    <Field :name="name" v-slot="{ field, meta }">
-      <label v-if="label" :for="id" class="block text-sm font-medium mb-1">{{ label }}</label>
+  <div :class="['w-full', { 'sm:col-span-2': fullWidth }]">
+    <label
+      v-if="label"
+      :for="name"
+      class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+    >
+      {{ label }}
+    </label>
 
-      <textarea
-        v-if="isTextarea"
-        v-bind="field"
-        :id="id"
-        :rows="rows || 4"
-        :placeholder="placeholder"
-        class="w-full rounded-md border px-3 py-2 bg-white dark:bg-slate-800 dark:text-slate-100"
-      ></textarea>
+    <component
+      :is="inputComponent"
+      :id="name"
+      v-model="localValue"
+      :type="inputType"
+      :rows="rows"
+      :options="options"
+      :placeholder="placeholder"
+      :aria-invalid="!!errorMessage"
+      @blur="markTouched"
+    />
 
-      <input
-        v-else
-        v-bind="field"
-        :id="id"
-        :type="type"
-        :placeholder="placeholder"
-        class="w-full rounded-md border px-3 py-2 bg-white dark:bg-slate-800 dark:text-slate-100"
-      />
-
-      <p v-if="meta.touched && meta.error" class="text-sm text-red-500 mt-1">{{ meta.error }}</p>
-    </Field>
+    <p v-if="errorMessage" class="mt-1 text-xs text-red-600" role="alert">
+      {{ errorMessage }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Field } from 'vee-validate'
-import { v4 as uuidv4 } from 'uuid'
+import { inject, ref, watch, computed } from 'vue'
+import BaseInput from './BaseInput.vue'
+import BaseSelect from './BaseSelect.vue'
+import BaseTextarea from './BaseTextarea.vue'
 
 const props = defineProps({
   name: { type: String, required: true },
   label: { type: String, default: '' },
   type: { type: String, default: 'text' },
-  rows: { type: Number, default: 4 },
+  inputType: { type: String, default: '' },
   placeholder: { type: String, default: '' },
+  rows: { type: Number, default: 3 },
+  options: { type: Array, default: () => [] },
+  fullWidth: { type: Boolean, default: false },
 })
 
-const id = computed(() => `field-${props.name}-${uuidv4().slice(0, 6)}`)
-const isTextarea = computed(() => props.type === 'textarea')
-</script>
+const formApi = inject<any>('formApi', null)
+const localValue = ref(formApi?.values?.[props.name] ?? '')
 
-<style scoped>
-textarea:focus,
-input:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+// sync from form to local
+if (formApi?.values) {
+  watch(
+    () => formApi.values[props.name],
+    (val) => (localValue.value = val),
+    { immediate: true },
+  )
 }
-</style>
+
+// sync from local to form
+watch(localValue, (val) => {
+  if (formApi?.setFieldValue) formApi.setFieldValue(props.name, val)
+})
+
+const errorMessage = computed(() => {
+  const val = formApi?.errors?.[props.name]
+  if (!val) return ''
+  return Array.isArray(val) ? val[0] : String(val)
+})
+
+function markTouched() {
+  formApi?.setFieldTouched?.(props.name, true)
+}
+
+const inputComponent = computed(() => {
+  if (props.type === 'select') return BaseSelect
+  if (props.type === 'textarea') return BaseTextarea
+  return BaseInput
+})
+
+const inputType = computed(() => props.inputType || props.type)
+</script>

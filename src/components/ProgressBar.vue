@@ -11,10 +11,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from 'vue'
+import { computed } from 'vue'
 const props = defineProps({
   step: { type: Number, required: true },
-  steps: { type: Number, default: 3 },
+  steps: { type: Number, default: 1 },
 })
-const percent = computed(() => Math.round(((props.step - 1) / (props.steps - 1)) * 100 || 0))
+const percent = computed(() => {
+  if (props.steps <= 1) return 100
+  return Math.round(((props.step - 1) / (props.steps - 1)) * 100)
+})
 </script>

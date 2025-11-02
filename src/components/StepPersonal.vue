@@ -7,33 +7,27 @@
       <div v-if="capture(validate, values)" style="display: none"></div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FieldRow name="name" :label="t('fields.name')" />
-        <FieldRow name="nationalId" :label="t('fields.nationalId')" />
-        <FieldRow name="dob" :label="t('fields.dob')" type="date" inputType="date" />
-        <FieldRow
-          name="gender"
-          :label="t('fields.gender')"
-          type="select"
-          :options="genderOptions"
-        />
-        <FieldRow name="address" :label="t('fields.address')" fullWidth />
-        <FieldRow name="city" :label="t('fields.city')" />
-        <FieldRow name="state" :label="t('fields.state')" />
-        <FieldRow name="country" :label="t('fields.country')" />
-        <FieldRow name="phone" :label="t('fields.phone')" />
-        <FieldRow name="email" :label="t('fields.email')" type="email" inputType="email" />
+        <Field name="name" :label="t('fields.name')" />
+        <Field name="nationalId" :label="t('fields.nationalId')" />
+        <Field name="dob" :label="t('fields.dob')" type="date" inputType="date" />
+        <Field name="gender" :label="t('fields.gender')" type="select" :options="genderOptions" />
+        <Field name="address" :label="t('fields.address')" fullWidth />
+        <Field name="city" :label="t('fields.city')" />
+        <Field name="state" :label="t('fields.state')" />
+        <Field name="country" :label="t('fields.country')" />
+        <Field name="phone" :label="t('fields.phone')" />
+        <Field name="email" :label="t('fields.email')" type="email" inputType="email" />
       </div>
     </Form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { Form } from 'vee-validate'
 import * as yup from 'yup'
 import { useI18n } from 'vue-i18n'
 import { useFormStore } from '@/stores/useFormStore'
-import FieldRow from '@/components/FieldRow.vue'
 import { defineExpose } from 'vue'
 
 const { t } = useI18n()

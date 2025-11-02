@@ -1,5 +1,5 @@
 import type { App } from 'vue';
-import { createOpenAIService, getOpenAIService } from '@/services/OpenAIService';
+import { createOpenAIService, getOpenAIService } from '@/services/openai.service';
 
 export function installOpenAI(app: App, opts?: { apiBase?: string; apiKey?: string }) {
   // If opts provided, create a configured instance
