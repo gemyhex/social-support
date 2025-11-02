@@ -1,24 +1,33 @@
-import { reactive } from 'vue'
+import { ref, readonly } from 'vue'
 
-export type ToastItem = { id: string; message: string; type?: 'success' | 'error' | 'info'; timeout?: number }
+export type ToastItem = {
+  id: string
+  message: string
+  type?: 'success' | 'error' | 'info'
+  timeout?: number
+}
 
-const toasts = reactive<Array<ToastItem>>([])
+const _toasts = ref<ToastItem[]>([])
+
+  ; (window as any).__toasts = _toasts
 
 export function useToast() {
   function push(message: string, type: ToastItem['type'] = 'info', timeout = 3000) {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-    const t = { id, message, type, timeout }
-    toasts.push(t)
+    const t: ToastItem = { id, message, type, timeout }
+    _toasts.value.push(t)
     if (timeout > 0) {
       setTimeout(() => remove(id), timeout)
     }
     return id
   }
+
   function remove(id: string) {
-    const idx = toasts.findIndex((x) => x.id === id)
-    if (idx >= 0) toasts.splice(idx, 1)
+    const idx = _toasts.value.findIndex((x) => x.id === id)
+    if (idx >= 0) _toasts.value.splice(idx, 1)
   }
-  return { push, remove, toasts }
+
+  return { push, remove, toasts: readonly(_toasts) }
 }
 
-export { toasts }
+export { _toasts as toastsRef }

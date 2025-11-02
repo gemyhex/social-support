@@ -1,6 +1,5 @@
 import { App } from 'vue';
 import Navbar from '@/components/Navbar.vue';
-import HeaderBar from '@/components/HeadBar.vue';
 import BaseForm from '@/components/BaseForm.vue'
 import BaseButton from '@/components/BaseButton.vue';
 import BaseInput from '@/components/BaseInput.vue';
@@ -17,7 +16,6 @@ export default {
   install(app: App) {
     // Core primitives
     app.component('Navbar', Navbar);
-    app.component('HeaderBar', HeaderBar);
     app.component('BaseForm', BaseForm);
     app.component('FieldItem', FieldItem);
     app.component('BaseButton', BaseButton);
