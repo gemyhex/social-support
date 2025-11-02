@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <component :is="layoutComponent">
+    <component :is="Layout">
       <router-view v-slot="{ Component }">
         <Suspense>
           <component :is="Component" />

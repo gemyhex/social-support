@@ -14,6 +14,7 @@
         class="mt-4"
         :step="formStore.activeStep"
         :loading="formStore.loading || loadingLocal"
+        :steps-count="steps.length"
         @next="onNext"
         @back="onBack"
         @submit="onSubmit"
@@ -51,10 +52,6 @@ const currentStep = computed(() => steps.find((s) => s.id === formStore.activeSt
 async function onNext() {
   const validate = stepRef.value?.validateStep
   const ok = await formStore.validateAndNext(validate, steps.length)
-
-  if (!ok) {
-    toast.push?.(t('messages.fixErrors') ?? 'Please fix the errors', 'warning', 2000)
-  }
 }
 
 function onBack() {
@@ -68,7 +65,6 @@ async function onSubmit() {
     const validate = stepRef.value?.validateStep
     const ok = await formStore.submit(validate)
     if (!ok) {
-      toast.push?.(t('messages.fixErrors') ?? 'Please fix the errors', 'warning', 1800)
       return
     }
     toast.push?.(t('messages.submitted') ?? 'Submitted', 'success', 1800)

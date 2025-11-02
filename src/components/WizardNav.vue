@@ -54,7 +54,7 @@ import { defineProps, computed } from 'vue'
 
 const props = defineProps({
   step: { type: Number, required: true },
-  stepsCount: { type: Number, required: true },
+  stepsCount: { type: Number, required: true, default: 3 },
   loading: { type: Boolean, default: false },
 })
 
