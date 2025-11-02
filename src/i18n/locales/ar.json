@@ -1,0 +1,99 @@
+{
+  "title": "طلب دعم اجتماعي",
+  "next": "التالي",
+  "back": "العودة",
+  "submit": "إرسال الطلب",
+  "save": "حفظ",
+  "help_me_write": "ساعدني في الكتابة",
+  "accept": "قبول",
+  "edit": "تعديل",
+  "discard": "تجاهل",
+  "generating suggestion": "يتم جلب الاقتراح",
+  "step": {
+    "1": "المعلومات الشخصية",
+    "2": "العائلة والوضع المالي",
+    "3": "الحالة الاجتماعية/الظروف"
+  },
+  "messages": {
+    "saved": "تم الحفظ محليًا",
+    "submitted": "تم إرسال الطلب"
+  },
+  "fields": {
+    "name": "الاسم الكامل",
+    "namePlaceholder": "أدخل اسمك الكامل",
+    "nationalId": "رقم الهوية الوطنية",
+    "nationalIdPlaceholder": "أدخل رقم الهوية الوطنية",
+    "dob": "تاريخ الميلاد",
+    "gender": "النوع",
+    "address": "العنوان",
+    "addressPlaceholder": "الشارع، المبنى، الشقة...",
+    "city": "المدينة",
+    "state": "المنطقة/المقاطعة",
+    "country": "البلد",
+    "phone": "الهاتف",
+    "phonePlaceholder": "هاتف جوال أو أرضي",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "you@example.com",
+    "maritalStatus": "الحالة الاجتماعية",
+    "dependents": "المعالون",
+    "dependentsPlaceholder": "عدد المعالين",
+    "employmentStatus": "حالة التوظيف",
+    "monthlyIncome": "الدخل الشهري",
+    "monthlyIncomePlaceholder": "الدخل الشهري بالعملة المحلية",
+    "housingStatus": "حالة السكن",
+    "currentFinancialSituation": "الوضع المالي الحالي",
+    "currentFinancialSituationPlaceholder": "صف وضعك المالي الحالي بإيجاز",
+    "employmentCircumstances": "ظروف العمل",
+    "employmentCircumstancesPlaceholder": "صف ظروف عملك (ساعات العمل، جهة العمل، العقد...)",
+    "reasonForApplying": "سبب تقديم الطلب",
+    "reasonForApplyingPlaceholder": "اشرح سبب تقدمك بطلب الدعم"
+  },
+  "select": {
+    "placeholder": "اختر",
+    "label": "اختر"
+  },
+  "options": {
+    "select": "اختر",
+    "gender": {
+      "male": "ذكر",
+      "female": "أنثى"
+    },
+    "marital": {
+      "single": "أعزب/عزباء",
+      "married": "متزوج/متزوجة",
+      "divorced": "مطلق/مطلقة"
+    },
+    "employment": {
+      "unemployed": "عاطل عن العمل",
+      "employed": "موظف/موظفة",
+      "selfEmployed": "يعمل لحسابه الخاص"
+    },
+    "housing": {
+      "own": "مِلك",
+      "rent": "إيجار",
+      "livingWithFamily": "يسكن مع العائلة",
+      "homeless": "بلا مأوى"
+    }
+  },
+  "errors": {
+    "nameRequired": "الاسم مطلوب",
+    "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
+    "dobRequired": "تاريخ الميلاد مطلوب",
+    "genderRequired": "النوع مطلوب",
+    "addressRequired": "العنوان مطلوب",
+    "cityRequired": "المدينة مطلوبة",
+    "countryRequired": "البلد مطلوب",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "invalidEmail": "عنوان بريد إلكتروني غير صالح",
+    "maritalRequired": "الحالة الاجتماعية مطلوبة",
+    "invalidDependents": "عدد معالين غير صالح",
+    "employmentRequired": "حالة التوظيف مطلوبة",
+    "housingRequired": "حالة السكن مطلوبة",
+    "moreDetail": "يرجى تقديم مزيد من التفاصيل"
+  },
+  "ai": {
+    "prompts": {
+      "suggestionTemplate": "يرجى كتابة فقرة موجزة ومتعاطفة من 3-5 جمل لـ \"{field}\". المحتوى الحالي: \"{current}\". حافظ على الوضوح والاحترام."
+    }
+  }
+}

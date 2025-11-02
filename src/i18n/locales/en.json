@@ -1,0 +1,98 @@
+{
+  "title": "Social Support Application",
+  "next": "Next",
+  "back": "Back",
+  "submit": "Submit application",
+  "save": "Save",
+  "help_me_write": "Help me write",
+  "accept": "Accept",
+  "edit": "Edit",
+  "discard": "Discard",
+  "step": {
+    "1": "Personal Info",
+    "2": "Family & Financial",
+    "3": "Situation"
+  },
+  "messages": {
+    "saved": "Saved locally",
+    "submitted": "Application submitted (mock)"
+  },
+  "fields": {
+    "name": "Full name",
+    "namePlaceholder": "Enter your full name",
+    "nationalId": "National ID",
+    "nationalIdPlaceholder": "Enter national ID",
+    "dob": "Date of birth",
+    "gender": "Gender",
+    "address": "Address",
+    "addressPlaceholder": "Street, building, flat...",
+    "city": "City",
+    "state": "State",
+    "country": "Country",
+    "phone": "Phone",
+    "phonePlaceholder": "Mobile or landline",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "maritalStatus": "Marital Status",
+    "dependents": "Dependents",
+    "dependentsPlaceholder": "Number of dependents",
+    "employmentStatus": "Employment Status",
+    "monthlyIncome": "Monthly Income",
+    "monthlyIncomePlaceholder": "Monthly income in local currency",
+    "housingStatus": "Housing Status",
+    "currentFinancialSituation": "Current financial situation",
+    "currentFinancialSituationPlaceholder": "Describe your current financial situation briefly",
+    "employmentCircumstances": "Employment circumstances",
+    "employmentCircumstancesPlaceholder": "Describe your employment (hours, employer, contract…) ",
+    "reasonForApplying": "Reason for applying",
+    "reasonForApplyingPlaceholder": "Explain why you are applying for support"
+  },
+  "select": {
+    "placeholder": "Select",
+    "label": "Select"
+  },
+  "options": {
+    "select": "Select",
+    "gender": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "marital": {
+      "single": "Single",
+      "married": "Married",
+      "divorced": "Divorced"
+    },
+    "employment": {
+      "unemployed": "Unemployed",
+      "employed": "Employed",
+      "selfEmployed": "Self-employed"
+    },
+    "housing": {
+      "own": "Own",
+      "rent": "Rent",
+      "livingWithFamily": "Living with family",
+      "homeless": "Homeless"
+    }
+  },
+  "errors": {
+    "nameRequired": "Name is required",
+    "nationalIdRequired": "National ID is required",
+    "dobRequired": "Date of birth is required",
+    "genderRequired": "Gender is required",
+    "addressRequired": "Address is required",
+    "cityRequired": "City is required",
+    "countryRequired": "Country is required",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email address",
+    "maritalRequired": "Marital status required",
+    "invalidDependents": "Invalid number of dependents",
+    "employmentRequired": "Employment status required",
+    "housingRequired": "Housing status required",
+    "moreDetail": "Please provide more detail"
+  },
+  "ai": {
+    "prompts": {
+      "suggestionTemplate": "Please write a concise, empathetic 3–5 sentence paragraph for \"{field}\". Current content: \"{current}\". Keep it clear and respectful."
+    }
+  }
+}

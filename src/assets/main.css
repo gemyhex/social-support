@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* subtle card and form touches */
+input::placeholder,
+textarea::placeholder {
+  color: rgba(148, 163, 184, .7);
+}
+
+.dark .rounded-xl {
+  /* darker card border for dark mode */
+  border: 0;
+}
+
+/* small focus ring */
+:focus {
+  outline: none;
+}
+
+/* unify form labels in RTL */
+[dir='rtl'] .form-label {
+  text-align: right;
+}
