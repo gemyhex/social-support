@@ -2,48 +2,28 @@
   <div>
     <h2 class="text-lg font-semibold mb-4">{{ t('step.1') }}</h2>
 
-    <Form :validation-schema="schema" :initial-values="initialValues" v-slot="{ validate, values }">
-      <!-- capture validate & values into refs (no globals) -->
-      <div v-if="capture(validate, values)" style="display: none"></div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <FieldRow name="name" :label="t('fields.name')" />
-        <FieldRow name="nationalId" :label="t('fields.nationalId')" />
-        <FieldRow name="dob" :label="t('fields.dob')" type="date" inputType="date" />
-        <FieldRow
-          name="gender"
-          :label="t('fields.gender')"
-          type="select"
-          :options="genderOptions"
-        />
-        <FieldRow name="address" :label="t('fields.address')" fullWidth />
-        <FieldRow name="city" :label="t('fields.city')" />
-        <FieldRow name="state" :label="t('fields.state')" />
-        <FieldRow name="country" :label="t('fields.country')" />
-        <FieldRow name="phone" :label="t('fields.phone')" />
-        <FieldRow name="email" :label="t('fields.email')" type="email" inputType="email" />
-      </div>
-    </Form>
+    <!-- Presentational form renderer (renders Field -> Base*). Validation is handled by useDynamicForm. -->
+    <BaseForm :fields="fields" :schema="schema" :initial-values="initialValues" :columns="2" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { Form } from 'vee-validate'
+import { watch } from 'vue'
 import * as yup from 'yup'
 import { useI18n } from 'vue-i18n'
 import { useFormStore } from '@/stores/useFormStore'
-import FieldRow from '@/components/FieldRow.vue'
+import { useDynamicForm } from '@/composables/useForm'
 import { defineExpose } from 'vue'
 
 const { t } = useI18n()
 const store = useFormStore()
 
+/* initial values (defensive defaults) */
 const initialValues = {
   name: store.form.name ?? '',
   nationalId: store.form.nationalId ?? '',
   dob: store.form.dob ?? '',
-  gender: store.form.gender ?? '',
+  gender: store.form.gender ?? '', // important: default to '' so select is empty
   address: store.form.address ?? '',
   city: store.form.city ?? '',
   state: store.form.state ?? '',
@@ -52,13 +32,32 @@ const initialValues = {
   email: store.form.email ?? '',
 }
 
+/* options - no empty option here because BaseSelect will render placeholder blank option */
 const genderOptions = [
-  { label: t('options.select'), value: '' },
   { label: t('options.gender.male'), value: 'male' },
   { label: t('options.gender.female'), value: 'female' },
-  { label: t('options.gender.other'), value: 'other' },
 ]
 
+/* fields schema for BaseForm (add placeholder for selects to be explicit) */
+const fields = [
+  { name: 'name', label: t('fields.name'), type: 'text' },
+  { name: 'nationalId', label: t('fields.nationalId'), type: 'text' },
+  { name: 'dob', label: t('fields.dob'), type: 'date', inputType: 'date' },
+  {
+    name: 'gender',
+    label: t('fields.gender'),
+    type: 'select',
+    options: genderOptions,
+  },
+  { name: 'address', label: t('fields.address'), type: 'textarea', fullWidth: true, rows: 3 },
+  { name: 'city', label: t('fields.city'), type: 'text' },
+  { name: 'state', label: t('fields.state'), type: 'text' },
+  { name: 'country', label: t('fields.country'), type: 'text' },
+  { name: 'phone', label: t('fields.phone'), type: 'text' },
+  { name: 'email', label: t('fields.email'), type: 'email', inputType: 'email' },
+]
+
+/* validation schema (Yup). required() treats '' as empty for strings -> triggers error */
 const schema = yup.object({
   name: yup.string().required(t('errors.nameRequired')),
   nationalId: yup.string().required(t('errors.nationalIdRequired')),
@@ -70,33 +69,21 @@ const schema = yup.object({
   email: yup.string().required(t('errors.emailRequired')).email(t('errors.invalidEmail')),
 })
 
-/* ---- capture validate + values from Form slot ----
-   pattern: the Form slot provides validate() and values; we store them in refs
-   'capture' is called once per render of the Form slot to register the functions.
-*/
-const validateRef = ref<null | (() => Promise<any>)>(null)
-const valuesRef = ref<Record<string, any>>({})
+/* Use the composable to get validateStep(), values, errors, etc. */
+const { validateStep, values } = useDynamicForm({ validationSchema: schema, initialValues })
 
-function capture(validateFn: any, values: any) {
-  validateRef.value = validateFn
-  valuesRef.value = values
-  // return false so the invisible div doesn't render anything visible
-  return false
-}
-
-/* expose validateStep() so parent (ApplicationForm) can await it */
-defineExpose({
-  validateStep: async () => {
-    if (!validateRef.value) {
-      // unexpected — no validate available
-      return false
-    }
-    const res = await validateRef.value()
-    // normalize to boolean
-    const isValid = res && typeof res === 'object' && 'valid' in res ? res.valid : Boolean(res)
-    // sync values into store (autosave)
-    Object.assign(store.form, valuesRef.value ?? {})
-    return Boolean(isValid)
+/* keep Pinia store synced as user types (immediate + deep) */
+watch(
+  values,
+  (nv) => {
+    if (!nv) return
+    Object.keys(store.form).forEach((k) => {
+      if (nv[k] !== undefined) store.form[k] = nv[k]
+    })
   },
-})
+  { deep: true, immediate: true },
+)
+
+/* expose validateStep to parent wizard via stepRef */
+defineExpose({ validateStep })
 </script>
