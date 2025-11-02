@@ -1,88 +1,89 @@
 <template>
-  <Form
-    @submit="onSubmit"
-    :validation-schema="schema"
-    :initial-values="initialValues"
-    v-slot="{ errors: slotErrors, values: slotValues, meta, isSubmitting }"
-  >
-    <slot
-      v-if="$slots.default"
-      :errors="slotErrors"
-      :meta="meta"
-      :isSubmitting="isSubmitting"
-      :values="slotValues"
-    />
+  <form @submit.prevent>
+    <div class="grid gap-4" :class="gridColsClass">
+      <template v-for="f in fields" :key="f.name">
+        <div :class="colClass(f)">
+          <Field :name="f.name" v-slot="{ field, meta }">
+            <div>
+              <component
+                v-if="isInputType(f.type)"
+                :is="fieldComponent(f.type)"
+                v-bind="{ ...field, 'data-name': f.name }"
+                :label="f.label"
+                :type="f.inputType ?? f.type ?? 'text'"
+                :placeholder="f.placeholder"
+                :clearable="f.clearable"
+                :id="f.id ?? f.name"
+              />
 
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <template v-for="field in fields" :key="field.name">
-        <Field
-          :name="field.name"
-          :label="field.label"
-          :type="field.type"
-          :inputType="field.inputType"
-          :options="field.options"
-          :fullWidth="field.fullWidth"
-          :rows="field.rows"
-        />
+              <BaseTextarea
+                v-else-if="f.type === 'textarea'"
+                v-bind="{ ...field, 'data-name': f.name }"
+                :label="f.label"
+                :placeholder="f.placeholder"
+                :rows="f.rows ?? 4"
+                :id="f.id ?? f.name"
+              />
+
+              <BaseSelect
+                v-else-if="f.type === 'select'"
+                v-bind="{ ...field, 'data-name': f.name }"
+                :label="f.label"
+                :options="f.options || []"
+                :placeholder="f.placeholder"
+                :id="f.id ?? f.name"
+              />
+
+              <div class="mt-2">
+                <slot name="field-action" :field-name="f.name"></slot>
+              </div>
+            </div>
+          </Field>
+
+          <!-- ErrorMessage: reliable display after validate() -->
+          <ErrorMessage :name="f.name" v-slot="{ message }">
+            <p v-if="message" class="text-xs text-red-500 mt-1">{{ message }}</p>
+          </ErrorMessage>
+        </div>
       </template>
     </div>
-  </Form>
+  </form>
 </template>
 
 <script setup lang="ts">
-import { provide, nextTick } from 'vue'
-import { useForm, Form } from 'vee-validate'
-
-interface Option {
-  label: string
-  value: any
-}
-
-interface FieldDefinition {
-  name: string
-  label: string
-  type?: string
-  inputType?: string
-  options?: Option[]
-  fullWidth?: boolean
-  rows?: number
-}
+import { computed } from 'vue'
+import { Field, ErrorMessage } from 'vee-validate'
+import BaseInput from '@/components/BaseInput.vue'
+import BaseSelect from '@/components/BaseSelect.vue'
+import BaseTextarea from '@/components/BaseTextarea.vue'
 
 const props = defineProps<{
-  schema: any
-  initialValues: Record<string, any>
-  fields?: FieldDefinition[]
+  fields: Array<Record<string, any>>
+  columns?: number
 }>()
 
-// setup vee-validate
-const { validate, values, setFieldValue, setFieldTouched, errors } = useForm({
-  validationSchema: props.schema,
-  initialValues: props.initialValues,
-})
+const gridColsClass = computed(() =>
+  props.columns && props.columns > 1
+    ? `grid-cols-1 sm:grid-cols-${props.columns}`
+    : 'grid-cols-1 sm:grid-cols-2',
+)
 
-// provide the form API for fields
-const formApi = { values, errors, setFieldValue, setFieldTouched, validate }
-provide('formApi', formApi)
-
-// internal submit (won’t be used by wizard directly)
-function onSubmit(vals: any) {
-  console.log('BaseForm submitted:', vals)
+function isInputType(t?: string) {
+  return !t || ['text', 'number', 'email', 'date', 'password'].includes(t)
 }
 
-// validation method used by wizard
-async function validateStep(): Promise<boolean> {
-  const result = await validate()
-  if (!result.valid) {
-    Object.keys(values).forEach((k) => setFieldTouched(k, true))
-    await nextTick()
-    return false
-  }
-  return true
+function fieldComponent(t?: string) {
+  if (!t || ['text', 'number', 'email', 'date', 'password'].includes(t)) return BaseInput
+  if (t === 'select') return BaseSelect
+  if (t === 'textarea') return BaseTextarea
+  return BaseInput
 }
 
-// expose validation and value-setting API
-defineExpose({
-  validateStep,
-  setFieldValue,
-})
+function colClass(f: any) {
+  return f.fullWidth ? 'col-span-1 sm:col-span-2' : ''
+}
 </script>
+
+<style scoped>
+/* small layout niceties */
+</style>

@@ -1,60 +1,150 @@
 import { defineStore } from 'pinia'
 import { reactive, toRefs, watch } from 'vue'
 
-const STORAGE_KEY = 'application_form_v1'
-
-const INITIAL_FORM_STATE = {
-  // personal
-  name: '',
-  nationalId: '',
-  dob: '',
-  gender: '',
-  email: '',
-  phone: '',
-  address: '',
-  // family/financial
-  maritalStatus: '',
-  dependents: 0,
-  monthlyIncome: null,
-  housingStatus: '',
-  // situation
-  currentFinancialSituation: '',
-  employmentCircumstances: '',
-  reasonForApplying: ''
-}
+const STORAGE_KEY = 'social_application'
 
 export const useFormStore = defineStore('form', () => {
   const state = reactive({
-    form: { ...INITIAL_FORM_STATE },
-    activeStep: 1
+    activeStep: 1,
+    loading: false,
+    form: {
+      name: '',
+      nationalId: '',
+      dob: '',
+      gender: '',
+      address: '',
+      city: '',
+      state: '',
+      country: '',
+      phone: '',
+      email: '',
+      maritalStatus: '',
+      dependents: 0,
+      employmentStatus: '',
+      monthlyIncome: null,
+      housingStatus: '',
+      currentFinancialSituation: '',
+      employmentCircumstances: '',
+      reasonForApplying: '',
+    } as Record<string, any>,
   })
 
-  // hydrate from storage
-  try {
-    const s = localStorage.getItem(STORAGE_KEY)
-    if (s) {
-      Object.assign(state.form, JSON.parse(s))
-    }
-  } catch (e) { /* ignore */ }
-
-  // auto-persist (debounce if needed)
   watch(
     () => state.form,
-    () => {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.form)) } catch { }
+    (v) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(v))
+      } catch (e) {
+        // ignore
+      }
     },
-    { deep: true }
+    { deep: true },
   )
 
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) Object.assign(state.form, JSON.parse(raw))
+  } catch (e) {
+    // ignore
+  }
+
+  function setField(name: string, value: any) {
+    state.form[name] = value
+  }
+
+  function setFields(values: Record<string, any>) {
+    Object.entries(values || {}).forEach(([k, v]) => {
+      state.form[k] = v
+    })
+  }
+
   function manualSave() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.form)) } catch { }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.form))
+    } catch (e) { }
   }
 
   function reset() {
-    state.form = { ...INITIAL_FORM_STATE }
+    Object.assign(state.form, {
+      name: '',
+      nationalId: '',
+      dob: '',
+      gender: '',
+      address: '',
+      city: '',
+      state: '',
+      country: '',
+      phone: '',
+      email: '',
+      maritalStatus: '',
+      dependents: 0,
+      employmentStatus: '',
+      monthlyIncome: null,
+      housingStatus: '',
+      currentFinancialSituation: '',
+      employmentCircumstances: '',
+      reasonForApplying: '',
+    })
     state.activeStep = 1
     manualSave()
   }
 
-  return { ...toRefs(state), manualSave, reset }
+  async function validateAndNext(validateFn?: (() => Promise<any>) | undefined, maxStep = 3) {
+    if (state.loading) return false
+    state.loading = true
+    try {
+      if (typeof validateFn === 'function') {
+        let ok = false
+        try {
+          const res = await validateFn()
+          ok = !!(res && typeof res === 'object' && 'valid' in res ? res.valid : res)
+        } catch (e) {
+          ok = false
+        }
+        if (!ok) return false
+      }
+      state.activeStep = Math.min(maxStep, state.activeStep + 1)
+      return true
+    } finally {
+      state.loading = false
+    }
+  }
+
+  function back() {
+    if (state.loading) return
+    if (state.activeStep > 1) state.activeStep--
+  }
+
+  async function submit(validateFn?: (() => Promise<any>) | undefined) {
+    if (state.loading) return false
+    state.loading = true
+    try {
+      if (typeof validateFn === 'function') {
+        let ok = false
+        try {
+          const res = await validateFn()
+          ok = !!(res && typeof res === 'object' && 'valid' in res ? res.valid : res)
+        } catch (e) {
+          ok = false
+        }
+        if (!ok) return false
+      }
+      reset()
+      return true
+    } finally {
+      state.loading = false
+    }
+  }
+
+  // IMPORTANT: return reactive refs, not copies
+  return {
+    ...toRefs(state),
+    setField,
+    setFields,
+    manualSave,
+    reset,
+    validateAndNext,
+    back,
+    submit,
+  }
 })

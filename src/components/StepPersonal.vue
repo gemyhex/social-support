@@ -2,32 +2,16 @@
   <div>
     <h2 class="text-lg font-semibold mb-4">{{ t('step.1') }}</h2>
 
-    <Form :validation-schema="schema" :initial-values="initialValues" v-slot="{ validate, values }">
-      <!-- capture validate & values into refs (no globals) -->
-      <div v-if="capture(validate, values)" style="display: none"></div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Field name="name" :label="t('fields.name')" />
-        <Field name="nationalId" :label="t('fields.nationalId')" />
-        <Field name="dob" :label="t('fields.dob')" type="date" inputType="date" />
-        <Field name="gender" :label="t('fields.gender')" type="select" :options="genderOptions" />
-        <Field name="address" :label="t('fields.address')" fullWidth />
-        <Field name="city" :label="t('fields.city')" />
-        <Field name="state" :label="t('fields.state')" />
-        <Field name="country" :label="t('fields.country')" />
-        <Field name="phone" :label="t('fields.phone')" />
-        <Field name="email" :label="t('fields.email')" type="email" inputType="email" />
-      </div>
-    </Form>
+    <BaseForm :fields="fields" :schema="schema" :initial-values="initialValues" :columns="2" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Form } from 'vee-validate'
+import { watch } from 'vue'
 import * as yup from 'yup'
 import { useI18n } from 'vue-i18n'
 import { useFormStore } from '@/stores/useFormStore'
+import { useDynamicForm } from '@/composables/useForm'
 import { defineExpose } from 'vue'
 
 const { t } = useI18n()
@@ -47,10 +31,26 @@ const initialValues = {
 }
 
 const genderOptions = [
-  { label: t('options.select'), value: '' },
   { label: t('options.gender.male'), value: 'male' },
   { label: t('options.gender.female'), value: 'female' },
-  { label: t('options.gender.other'), value: 'other' },
+]
+
+const fields = [
+  { name: 'name', label: t('fields.name'), type: 'text' },
+  { name: 'nationalId', label: t('fields.nationalId'), type: 'text' },
+  { name: 'dob', label: t('fields.dob'), type: 'date', inputType: 'date' },
+  {
+    name: 'gender',
+    label: t('fields.gender'),
+    type: 'select',
+    options: genderOptions,
+  },
+  { name: 'address', label: t('fields.address'), type: 'textarea', fullWidth: true, rows: 3 },
+  { name: 'city', label: t('fields.city'), type: 'text' },
+  { name: 'state', label: t('fields.state'), type: 'text' },
+  { name: 'country', label: t('fields.country'), type: 'text' },
+  { name: 'phone', label: t('fields.phone'), type: 'text' },
+  { name: 'email', label: t('fields.email'), type: 'email', inputType: 'email' },
 ]
 
 const schema = yup.object({
@@ -64,33 +64,18 @@ const schema = yup.object({
   email: yup.string().required(t('errors.emailRequired')).email(t('errors.invalidEmail')),
 })
 
-/* ---- capture validate + values from Form slot ----
-   pattern: the Form slot provides validate() and values; we store them in refs
-   'capture' is called once per render of the Form slot to register the functions.
-*/
-const validateRef = ref<null | (() => Promise<any>)>(null)
-const valuesRef = ref<Record<string, any>>({})
+const { validateStep, values } = useDynamicForm({ validationSchema: schema, initialValues })
 
-function capture(validateFn: any, values: any) {
-  validateRef.value = validateFn
-  valuesRef.value = values
-  // return false so the invisible div doesn't render anything visible
-  return false
-}
-
-/* expose validateStep() so parent (ApplicationForm) can await it */
-defineExpose({
-  validateStep: async () => {
-    if (!validateRef.value) {
-      // unexpected — no validate available
-      return false
-    }
-    const res = await validateRef.value()
-    // normalize to boolean
-    const isValid = res && typeof res === 'object' && 'valid' in res ? res.valid : Boolean(res)
-    // sync values into store (autosave)
-    Object.assign(store.form, valuesRef.value ?? {})
-    return Boolean(isValid)
+watch(
+  values,
+  (nv) => {
+    if (!nv) return
+    Object.keys(store.form).forEach((k) => {
+      if (nv[k] !== undefined) store.form[k] = nv[k]
+    })
   },
-})
+  { deep: true, immediate: true },
+)
+
+defineExpose({ validateStep })
 </script>

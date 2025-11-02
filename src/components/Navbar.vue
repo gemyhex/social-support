@@ -4,9 +4,6 @@
       <div class="flex items-center gap-3">
         <div>
           <div class="font-semibold text-slate-900 dark:text-slate-100">{{ $t('title') }}</div>
-          <div class="text-xs text-slate-500 dark:text-slate-400">
-            Apply quickly — your draft is saved
-          </div>
         </div>
       </div>
 

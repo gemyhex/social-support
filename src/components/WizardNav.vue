@@ -1,10 +1,29 @@
 <template>
   <div class="flex items-center justify-between mt-4">
-    <BaseButton v-if="step > 1" variant="secondary" size="sm" @click="$emit('back')" type="button">
-      {{ $t('back') }}
-    </BaseButton>
+    <div>
+      <BaseButton
+        v-if="step > 1"
+        variant="secondary"
+        size="sm"
+        :disabled="false"
+        @click="$emit('back')"
+        type="button"
+      >
+        {{ $t('back') }}
+      </BaseButton>
+    </div>
 
-    <div class="flex items-center gap-2 ml-auto">
+    <div class="flex items-center gap-2">
+      <BaseButton
+        v-if="step === 3"
+        variant="secondary"
+        size="sm"
+        @click="$emit('save')"
+        type="button"
+      >
+        {{ $t('save') }}
+      </BaseButton>
+
       <BaseButton
         v-if="!isLast"
         variant="primary"
@@ -31,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { defineProps, computed } from 'vue'
 
 const props = defineProps({
   step: { type: Number, required: true },
