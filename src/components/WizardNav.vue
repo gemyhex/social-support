@@ -1,6 +1,5 @@
 <template>
   <div class="flex items-center justify-between mt-4">
-    <!-- Back button (hidden on step 1) -->
     <div>
       <BaseButton
         v-if="step > 1"
@@ -14,9 +13,7 @@
       </BaseButton>
     </div>
 
-    <!-- Right side actions -->
     <div class="flex items-center gap-2">
-      <!-- Save only shown on final step -->
       <BaseButton
         v-if="step === 3"
         variant="secondary"
@@ -27,7 +24,6 @@
         {{ $t('save') }}
       </BaseButton>
 
-      <!-- Next (or Submit on final) -->
       <BaseButton
         v-if="step < 3"
         variant="primary"
@@ -54,7 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import BaseButton from '@/components/BaseButton.vue'
 import { defineProps } from 'vue'
 
 const props = defineProps({
@@ -62,7 +57,3 @@ const props = defineProps({
   loading: { type: Boolean, default: false },
 })
 </script>
-
-<style scoped>
-/* keep styles minimal — BaseButton handles visuals */
-</style>
