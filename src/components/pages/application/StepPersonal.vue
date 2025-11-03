@@ -18,16 +18,16 @@ const { t } = useI18n()
 const store = useFormStore()
 
 const initialValues = {
-  name: store.form.name ?? '',
-  nationalId: store.form.nationalId ?? '',
-  dob: store.form.dob ?? '',
-  gender: store.form.gender ?? '',
-  address: store.form.address ?? '',
-  city: store.form.city ?? '',
-  state: store.form.state ?? '',
-  country: store.form.country ?? '',
-  phone: store.form.phone ?? '',
-  email: store.form.email ?? '',
+  name: store.storage.draft.name ?? '',
+  nationalId: store.storage.draft.nationalId ?? '',
+  dob: store.storage.draft.dob ?? '',
+  gender: store.storage.draft.gender ?? '',
+  address: store.storage.draft.address ?? '',
+  city: store.storage.draft.city ?? '',
+  state: store.storage.draft.state ?? '',
+  country: store.storage.draft.country ?? '',
+  phone: store.storage.draft.phone ?? '',
+  email: store.storage.draft.email ?? '',
 }
 
 const genderOptions = [
@@ -68,10 +68,10 @@ const { validateStep, values } = useDynamicForm({ validationSchema: schema, init
 
 watch(
   values,
-  (nv) => {
-    if (!nv) return
-    Object.keys(store.form).forEach((k) => {
-      if (nv[k] !== undefined) store.form[k] = nv[k]
+  (newVal) => {
+    if (!newVal) return
+    Object.keys(store.storage.draft).forEach((key) => {
+      if (newVal[key] !== undefined) store.storage.draft[key] = newVal[key]
     })
   },
   { deep: true, immediate: true },

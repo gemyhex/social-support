@@ -2,23 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
-/* subtle card and form touches */
-input::placeholder,
-textarea::placeholder {
-  color: rgba(148, 163, 184, .7);
+.glass {
+  background             : linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.35) 100%);
+  border                 : 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter        : blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
 }
 
-.dark .rounded-xl {
-  /* darker card border for dark mode */
-  border: 0;
+.dark .glass {
+  background: linear-gradient(180deg, rgba(9, 11, 16, 0.55) 0%, rgba(9, 11, 16, 0.25) 100%);
+  border    : 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* small focus ring */
-:focus {
-  outline: none;
+/* nice focus ring */
+.input-focus:focus {
+  outline   : none;
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.08), 0 0 0 4px rgba(37, 99, 235, 0.12);
 }
 
-/* unify form labels in RTL */
-[dir='rtl'] .form-label {
-  text-align: right;
+/* subtle primary button hover */
+.btn-primary {
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+
+.btn-primary:hover {
+  transform : translateY(-3px);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.12);
+}
+
+.btn-ghost:hover {
+  transform: translateY(-2px);
 }

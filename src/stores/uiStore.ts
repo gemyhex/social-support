@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 
-const THEME_KEY = 'ss_theme_v1';
-const LOCALE_KEY = 'ss_locale_v1';
+const THEME_KEY = 'theme';
+const LOCALE_KEY = 'locale';
 
 export const useUIStore = defineStore('ui', () => {
   const savedTheme = (() => { try { return localStorage.getItem(THEME_KEY) } catch { return null } })();

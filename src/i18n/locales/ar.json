@@ -1,4 +1,21 @@
 {
+  "titles": {
+    "home": "الرئيسية — الدعم الاجتماعي",
+    "applicationForm": "تعبئة الطلب — الدعم الاجتماعي"
+  },
+  "fillApplication": "تعبئة الطلب",
+  "editApplication": "تعديل الطلب",
+  "startNew": "ابدأ طلب دعم اجتماعي جديد",
+  "updateExisting": "قم بتحديث طلبك الحالي",
+  "fill": "تعبئة",
+  "view": "عرض",
+  "prompt": "المطالبة",
+  "suggestion": "الاقتراح",
+  "suggestion_placeholder": "سيظهر الاقتراح الناتج هنا...",
+  "generating_suggestion": "جاري إنشاء الاقتراح...",
+  "preview": "معاينة",
+  "fillNow": "ابدأ الآن",
+  "disabled": "غير متاح",
   "title": "طلب دعم اجتماعي",
   "next": "التالي",
   "back": "العودة",
@@ -76,6 +93,7 @@
     }
   },
   "errors": {
+    "required": "الحقل مطلوب",
     "nameRequired": "الاسم مطلوب",
     "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
     "dobRequired": "تاريخ الميلاد مطلوب",
@@ -89,7 +107,8 @@
     "invalidDependents": "عدد معالين غير صالح",
     "employmentRequired": "حالة التوظيف مطلوبة",
     "housingRequired": "حالة السكن مطلوبة",
-    "moreDetail": "يرجى تقديم مزيد من التفاصيل"
+    "moreDetail": "يرجى تقديم مزيد من التفاصيل",
+    "fetchSuggestionFailed": "فشل في إنشاء الاقتراح. يرجى المحاولة لاحقًا."
   },
   "ai": {
     "prompts": {

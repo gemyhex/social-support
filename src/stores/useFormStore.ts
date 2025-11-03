@@ -1,94 +1,114 @@
 import { defineStore } from 'pinia'
-import { reactive, toRefs, watch } from 'vue'
+import { reactive, toRefs, watch, computed } from 'vue'
 
 const STORAGE_KEY = 'social_application'
+
+type FormShape = Record<string, any>
+
+const defaultForm = (): FormShape => ({
+  name: '',
+  nationalId: '',
+  dob: '',
+  gender: '',
+  address: '',
+  city: '',
+  state: '',
+  country: '',
+  phone: '',
+  email: '',
+  maritalStatus: '',
+  dependents: 0,
+  employmentStatus: '',
+  monthlyIncome: null,
+  housingStatus: '',
+  currentFinancialSituation: '',
+  employmentCircumstances: '',
+  reasonForApplying: '',
+})
 
 export const useFormStore = defineStore('form', () => {
   const state = reactive({
     activeStep: 1,
     loading: false,
-    form: {
-      name: '',
-      nationalId: '',
-      dob: '',
-      gender: '',
-      address: '',
-      city: '',
-      state: '',
-      country: '',
-      phone: '',
-      email: '',
-      maritalStatus: '',
-      dependents: 0,
-      employmentStatus: '',
-      monthlyIncome: null,
-      housingStatus: '',
-      currentFinancialSituation: '',
-      employmentCircumstances: '',
-      reasonForApplying: '',
-    } as Record<string, any>,
+    storage: {
+      draft: defaultForm(),
+      submitted: null as FormShape | null,
+      submittedAt: null as string | null,
+    },
   })
 
+  const raw = localStorage.getItem(STORAGE_KEY)
+  if (raw) {
+    const parsed = JSON.parse(raw)
+    if (parsed?.draft) state.storage.draft = { ...defaultForm(), ...parsed.draft }
+    if (parsed?.submitted) state.storage.submitted = parsed.submitted
+    if (parsed?.submittedAt) state.storage.submittedAt = parsed.submittedAt
+  }
+
+
   watch(
-    () => state.form,
-    (v) => {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(v))
-      } catch (e) {
-        // ignore
-      }
+    () => state.storage,
+    (val) => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
     },
     { deep: true },
   )
 
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) Object.assign(state.form, JSON.parse(raw))
-  } catch (e) {
-    // ignore
-  }
-
+  // -------------------------
+  // helpers for form editing
+  // -------------------------
   function setField(name: string, value: any) {
-    state.form[name] = value
+    state.storage.draft[name] = value
   }
 
-  function setFields(values: Record<string, any>) {
+  function setFields(values: FormShape) {
     Object.entries(values || {}).forEach(([k, v]) => {
-      state.form[k] = v
+      state.storage.draft[k] = v
     })
   }
 
   function manualSave() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.form))
-    } catch (e) { }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.storage))
   }
 
-  function reset() {
-    Object.assign(state.form, {
-      name: '',
-      nationalId: '',
-      dob: '',
-      gender: '',
-      address: '',
-      city: '',
-      state: '',
-      country: '',
-      phone: '',
-      email: '',
-      maritalStatus: '',
-      dependents: 0,
-      employmentStatus: '',
-      monthlyIncome: null,
-      housingStatus: '',
-      currentFinancialSituation: '',
-      employmentCircumstances: '',
-      reasonForApplying: '',
-    })
+  function resetDraft() {
+    state.storage.draft = defaultForm()
     state.activeStep = 1
     manualSave()
   }
 
+  // -------------------------
+  // submission helpers
+  // -------------------------
+  const hasSubmission = computed(() => state.storage.submitted !== null)
+
+  function saveSubmissionSnapshot() {
+    state.storage.submitted = { ...state.storage.draft }
+    const now = new Date().toISOString()
+    state.storage.submittedAt = now
+    manualSave()
+  }
+
+  function loadSubmissionIntoForm() {
+    try {
+      if (!state.storage.submitted) return false
+      state.storage.draft = { ...defaultForm(), ...state.storage.submitted }
+      manualSave()
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+
+  function clearSubmission() {
+    state.storage.submitted = null
+    state.storage.submittedAt = null
+    manualSave()
+  }
+
+  // -------------------------
+  // navigation & validation
+  // -------------------------
   async function validateAndNext(validateFn?: (() => Promise<any>) | undefined, maxStep = 3) {
     if (state.loading) return false
     state.loading = true
@@ -115,7 +135,7 @@ export const useFormStore = defineStore('form', () => {
     if (state.activeStep > 1) state.activeStep--
   }
 
-  async function submit(validateFn?: (() => Promise<any>) | undefined) {
+  async function submit(validateFn?: (() => Promise<any>) | undefined, options?: { clearDraftAfterSubmit?: boolean }) {
     if (state.loading) return false
     state.loading = true
     try {
@@ -129,20 +149,36 @@ export const useFormStore = defineStore('form', () => {
         }
         if (!ok) return false
       }
-      reset()
+
+      // persist submitted snapshot
+      saveSubmissionSnapshot()
+
+      if (options?.clearDraftAfterSubmit ?? true) {
+        // default: clear draft to empty after submit
+        resetDraft()
+      }
+
       return true
     } finally {
       state.loading = false
     }
   }
 
-  // IMPORTANT: return reactive refs, not copies
   return {
     ...toRefs(state),
+    // helpers
     setField,
     setFields,
     manualSave,
-    reset,
+    resetDraft,
+
+    // submission
+    saveSubmissionSnapshot,
+    loadSubmissionIntoForm,
+    clearSubmission,
+    hasSubmission,
+
+    // navigation
     validateAndNext,
     back,
     submit,

@@ -18,6 +18,6 @@ const props = defineProps({
 })
 const percent = computed(() => {
   if (props.steps <= 1) return 100
-  return Math.round(((props.step - 1) / (props.steps - 1)) * 100)
+  return Math.round((props.step / props.steps) * 100)
 })
 </script>

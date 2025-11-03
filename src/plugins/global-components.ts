@@ -1,23 +1,26 @@
 import { App } from 'vue';
-import Navbar from '@/components/Navbar.vue';
-import BaseForm from '@/components/BaseForm.vue'
-import BaseButton from '@/components/BaseButton.vue';
-import BaseInput from '@/components/BaseInput.vue';
-import BaseSelect from '@/components/BaseSelect.vue';
-import BaseTextarea from '@/components/BaseTextarea.vue';
-import ProgressBar from '@/components/ProgressBar.vue';
-import FieldItem from '@/components/FieldItem.vue'
-import WizardNav from '@/components/WizardNav.vue';
-import WizardStepper from '@/components/WizardStepper.vue';
-import HelpMeWriteModal from '@/components/HelpMeWriteModal.vue';
-import Toasts from '@/components/Toasts.vue';
+import AppHeader from '@/components/app/AppHeader.vue';
+import BaseForm from '@/components/base/BaseForm.vue'
+import BaseCard from '@/components/base/BaseCard.vue';
+import BaseButton from '@/components/base/BaseButton.vue';
+import BaseInput from '@/components/base/BaseInput.vue';
+import BaseSelect from '@/components/base/BaseSelect.vue';
+import BaseTextarea from '@/components/base/BaseTextarea.vue';
+import ProgressBar from '@/components/global/ProgressBar.vue';
+import FieldItem from '@/components/base/BaseFormField.vue'
+import WizardNav from '@/components/wizard/WizardNav.vue';
+import WizardStepper from '@/components/wizard/WizardStepper.vue';
+import WizardContainer from '@/components/wizard/WizardContainer.vue';
+import HelpMeWriteModal from '@/components/global/HelpMeWriteModal.vue';
+import Toasts from '@/components/global/Toasts.vue';
 
 export default {
   install(app: App) {
     // Core primitives
-    app.component('Navbar', Navbar);
+    app.component('AppHeader', AppHeader);
     app.component('BaseForm', BaseForm);
     app.component('FieldItem', FieldItem);
+    app.component('BaseCard', BaseCard);
     app.component('BaseButton', BaseButton);
     app.component('BaseInput', BaseInput);
     app.component('BaseSelect', BaseSelect);
@@ -26,6 +29,7 @@ export default {
     // Wizard / Layout helpers
     app.component('ProgressBar', ProgressBar);
     app.component('WizardNav', WizardNav);
+    app.component('WizardContainer', WizardContainer);
     app.component('WizardStepper', WizardStepper);
 
     // Utilities / Overlays
