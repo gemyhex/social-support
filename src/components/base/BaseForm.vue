@@ -40,7 +40,6 @@
             </div>
           </Field>
 
-          <!-- ErrorMessage: reliable display after validate() -->
           <ErrorMessage :name="f.name" v-slot="{ message }">
             <p v-if="message" class="text-xs text-red-500 mt-1">{{ message }}</p>
           </ErrorMessage>
@@ -53,9 +52,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Field, ErrorMessage } from 'vee-validate'
-import BaseInput from '@/components/BaseInput.vue'
-import BaseSelect from '@/components/BaseSelect.vue'
-import BaseTextarea from '@/components/BaseTextarea.vue'
+import BaseInput from '@/components/base/BaseInput.vue'
+import BaseSelect from '@/components/base/BaseSelect.vue'
+import BaseTextarea from '@/components/base/BaseTextarea.vue'
 
 const props = defineProps<{
   fields: Array<Record<string, any>>
@@ -83,7 +82,3 @@ function colClass(f: any) {
   return f.fullWidth ? 'col-span-1 sm:col-span-2' : ''
 }
 </script>
-
-<style scoped>
-/* small layout niceties */
-</style>

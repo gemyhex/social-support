@@ -68,36 +68,25 @@ const forwardedAttrs = computed(() => {
 const ariaInvalid = computed(() => (props.errorMsg ? 'true' : null))
 const ariaDescribedBy = computed(() => (props.errorMsg ? computedId.value + '-err' : null))
 
-/* If placeholder is an i18n key (like 'select.placeholder'), prefer using $t if present */
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 const placeholderLabel = computed(() => {
-  // if placeholder looks like a translation key (no spaces), try translate
   if (typeof props.placeholder === 'string' && props.placeholder.indexOf(' ') === -1) {
-    try {
-      return t(props.placeholder as string)
-    } catch {
-      /* fallback */
-    }
+    return t(props.placeholder as string)
   }
   return props.placeholder
 })
 
-/* handle change: update vee-validate Field by calling its handlers (if passed)
-   and emit update:modelValue for v-model usage */
 function handleChange(e: Event) {
   const el = e.target as HTMLSelectElement
   const value = props.multiple ? Array.from(el.selectedOptions).map((o) => o.value) : el.value
 
-  // call Field's change handler if provided
   if (typeof (attrs as any).onChange === 'function') (attrs as any).onChange(e)
 
-  // some Field implementations expect onInput instead — call it with a synthetic event
   if (typeof (attrs as any).onInput === 'function') {
     ;(attrs as any).onInput({ target: { value } } as unknown as Event)
   }
 
-  // Emit for v-model usage
   emit('update:modelValue', value)
   emit('change', value)
 }

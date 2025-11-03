@@ -1,4 +1,3 @@
-<!-- components/BaseInput.vue -->
 <template>
   <div class="field-item">
     <label v-if="label" :for="computedId" class="block text-sm font-medium mb-1">

@@ -14,15 +14,12 @@ export function useApplySuggestion(store: Store<any>) {
   function applyToVee(field: string, text: string) {
     if (setFieldValueRef.value) {
       try {
-        console.debug(`[useApplySuggestion:${id}] setFieldValue =>`, field, text)
         setFieldValueRef.value(field, text)
         return true
       } catch (err) {
-        console.error(`[useApplySuggestion:${id}] setFieldValue threw`, err)
         return false
       }
     }
-    console.debug(`[useApplySuggestion:${id}] setFieldValue not available for`, field)
     return false
   }
 
@@ -34,11 +31,10 @@ export function useApplySuggestion(store: Store<any>) {
           s.form[field] = text
         })
       } else {
-        ; (store.form as any)[field] = text
+        (store.storage.draft as any)[field] = text
       }
-      console.debug(`[useApplySuggestion:${id}] Pinia store patched =>`, field)
     } catch (err) {
-      console.error(`[useApplySuggestion:${id}] patch failed`, err)
+      console.error(`patch failed`, err)
     }
   }
 
@@ -46,10 +42,8 @@ export function useApplySuggestion(store: Store<any>) {
     const d = (e as CustomEvent).detail || {}
     const field = d.field as string
     const text = (d.text ?? '') as string
-    console.info(`[useApplySuggestion:${id}] apply-suggestion received`, { field, text })
 
     if (!field) {
-      console.warn(`[useApplySuggestion:${id}] missing field`)
       return
     }
 
@@ -57,7 +51,6 @@ export function useApplySuggestion(store: Store<any>) {
     applyToStore(field, text)
     if (!applied) {
       pending.set(field, text)
-      console.debug(`[useApplySuggestion:${id}] stored pending suggestion for`, field)
     } else {
       if (pending.has(field)) pending.delete(field)
     }
@@ -65,22 +58,18 @@ export function useApplySuggestion(store: Store<any>) {
 
   function registerSetFieldValue(fn: (name: string, value: any) => void) {
     if (typeof fn !== 'function') {
-      console.warn(`[useApplySuggestion:${id}] register called with non-function`)
       return
     }
     setFieldValueRef.value = fn
-    console.info(`[useApplySuggestion:${id}] registerSetFieldValue - function registered`)
 
     // apply pending
     if (pending.size) {
-      console.debug(`[useApplySuggestion:${id}] applying ${pending.size} pending suggestions`)
       for (const [fld, txt] of Array.from(pending.entries())) {
         try {
           fn(fld, txt)
           pending.delete(fld)
-          console.debug(`[useApplySuggestion:${id}] applied pending ->`, fld)
         } catch (err) {
-          console.error(`[useApplySuggestion:${id}] failed applying pending for`, fld, err)
+          console.error(`failed applying pending for`, fld, err)
         }
       }
     }
@@ -88,11 +77,9 @@ export function useApplySuggestion(store: Store<any>) {
 
   onMounted(() => {
     window.addEventListener('apply-suggestion', handleEvent as EventListener)
-    console.info(`[useApplySuggestion:${id}] listener attached`)
   })
   onBeforeUnmount(() => {
     window.removeEventListener('apply-suggestion', handleEvent as EventListener)
-    console.info(`[useApplySuggestion:${id}] listener removed`)
   })
 
   return { registerSetFieldValue }

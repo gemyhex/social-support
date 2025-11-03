@@ -1,11 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Index from '@/views/index.vue'
+import Home from '@/views/index.vue'
+import ApplicationForm from '@/views/application/create.vue'
 
-const routes = [{ path: '/', name: 'Home', component: Index }]
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
+    meta: { title: 'titles.home' }, // translation key
+  },
+  {
+    path: '/application',
+    name: 'ApplicationForm',
+    component: ApplicationForm,
+    meta: { title: 'titles.applicationForm' },
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
 
 export default router

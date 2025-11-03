@@ -49,9 +49,9 @@ const fields = [
 ]
 
 const initialValues = {
-  currentFinancialSituation: store.form.currentFinancialSituation ?? '',
-  employmentCircumstances: store.form.employmentCircumstances ?? '',
-  reasonForApplying: store.form.reasonForApplying ?? '',
+  currentFinancialSituation: store.storage.draft.currentFinancialSituation ?? '',
+  employmentCircumstances: store.storage.draft.employmentCircumstances ?? '',
+  reasonForApplying: store.storage.draft.reasonForApplying ?? '',
 }
 
 const schema = yup.object({
@@ -73,10 +73,10 @@ if (typeof setFieldValue === 'function') registerSetFieldValue(setFieldValue)
 
 watch(
   values,
-  (nv) => {
-    if (!nv) return
-    Object.keys(store.form).forEach((k) => {
-      if (nv[k] !== undefined) store.form[k] = nv[k]
+  (newVal) => {
+    if (!newVal) return
+    Object.keys(store.storage.draft).forEach((key) => {
+      if (newVal[key] !== undefined) store.storage.draft[key] = newVal[key]
     })
   },
   { deep: true, immediate: true },
@@ -87,7 +87,7 @@ defineExpose({ validateStep })
 const helpFields = ['currentFinancialSituation', 'employmentCircumstances', 'reasonForApplying']
 
 function openHelp(fieldName: string) {
-  const current = (store.form as any)[fieldName] || ''
+  const current = (store.storage.draft as any)[fieldName] || ''
   const labelMap: Record<string, string> = {
     currentFinancialSituation: t('fields.currentFinancialSituation'),
     employmentCircumstances: t('fields.employmentCircumstances'),

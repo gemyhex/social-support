@@ -38,9 +38,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Field, ErrorMessage } from 'vee-validate'
-import BaseInput from '@/components/BaseInput.vue'
-import BaseSelect from '@/components/BaseSelect.vue'
-import BaseTextarea from '@/components/BaseTextarea.vue'
 
 const props = defineProps({
   name: { type: String, required: true },

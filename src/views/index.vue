@@ -1,84 +1,75 @@
 <template>
-  <section class="w-full max-w-3xl mx-auto">
-    <div class="bg-white dark:bg-slate-900 rounded-lg shadow-sm p-5">
-      <WizardStepper :step="formStore.activeStep" :labels="stepLabels" />
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <template v-if="loading">
+        <BaseCard class="animate-pulse p-6 rounded-xl glass">
+          <div class="h-6 bg-slate-200 dark:bg-slate-700 rounded w-2/3 mb-3"></div>
+          <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/2 mb-6"></div>
+          <div class="h-10 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
+        </BaseCard>
+      </template>
 
-      <component
-        :is="currentStep.component"
-        :key="formStore.activeStep"
-        ref="stepRef"
-        class="mt-4"
-      />
-
-      <WizardNav
-        class="mt-4"
-        :step="formStore.activeStep"
-        :loading="formStore.loading || loadingLocal"
-        @next="onNext"
-        @back="onBack"
-        @submit="onSubmit"
-        @save="onSave"
-      />
+      <template v-else>
+        <BaseCard
+          has-action
+          has-icon
+          :title="title"
+          :subtitle="subtitle"
+          :action-label="actionLabel"
+          :disabled="false"
+          @click="goToFill"
+        >
+          <template #icon>
+            <svg
+              class="w-6 h-6 text-blue-600"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M12 4v16M4 12h16" />
+            </svg>
+          </template>
+        </BaseCard>
+      </template>
     </div>
-  </section>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useFormStore } from '@/stores/useFormStore'
-import StepPersonal from '@/components/StepPersonal.vue'
-import StepFamilyFinancial from '@/components/StepFamilyFinancial.vue'
-import StepSituation from '@/components/StepSituation.vue'
-import { useToast } from '@/composables/useToast'
+import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const formStore = useFormStore()
-const toast = useToast()
-const stepRef = ref<any>(null)
+const router = useRouter()
+const store = useFormStore()
 
-const loadingLocal = ref(false)
+const loading = ref(true)
+const hasApplication = ref(false)
 
-const steps = [
-  { id: 1, component: StepPersonal, label: t('step.1') },
-  { id: 2, component: StepFamilyFinancial, label: t('step.2') },
-  { id: 3, component: StepSituation, label: t('step.3') },
-]
+async function checkForSubmission() {
+  loading.value = true
+  await new Promise((r) => setTimeout(r, 1000))
+  hasApplication.value = store.hasSubmission
+  loading.value = false
+}
 
-const stepLabels = computed(() => steps.map((s) => s.label))
-const currentStep = computed(() => steps.find((s) => s.id === formStore.activeStep) ?? steps[0])
+onMounted(() => {
+  checkForSubmission()
+})
 
-async function onNext() {
-  const validate = stepRef.value?.validateStep
-  const ok = await formStore.validateAndNext(validate, steps.length)
+const title = computed(() => (hasApplication.value ? t('editApplication') : t('fillApplication')))
+const subtitle = computed(() => (hasApplication.value ? t('updateExisting') : t('startNew')))
+const actionLabel = computed(() => (hasApplication.value ? t('edit') : t('fill')))
 
-  if (!ok) {
-    toast.push?.(t('messages.fixErrors') ?? 'Please fix the errors', 'warning', 2000)
+async function goToFill() {
+  // prevent double actions while transitioning
+  if (loading.value) return
+  if (hasApplication.value) {
+    // load submitted snapshot into draft so form shows existing values for editing
+    store.loadSubmissionIntoForm()
   }
-}
-
-function onBack() {
-  formStore.back()
-}
-
-async function onSubmit() {
-  if (loadingLocal.value) return
-  loadingLocal.value = true
-  try {
-    const validate = stepRef.value?.validateStep
-    const ok = await formStore.submit(validate)
-    if (!ok) {
-      toast.push?.(t('messages.fixErrors') ?? 'Please fix the errors', 'warning', 1800)
-      return
-    }
-    toast.push?.(t('messages.submitted') ?? 'Submitted', 'success', 1800)
-  } finally {
-    loadingLocal.value = false
-  }
-}
-
-function onSave() {
-  formStore.manualSave()
-  toast.push?.(t('messages.saved') ?? 'Saved', 'success', 1200)
+  await router.push({ name: 'ApplicationForm' })
 }
 </script>

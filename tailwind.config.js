@@ -5,21 +5,32 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: '#eef2ff',
-          100: '#e0e7ff',
-          500: '#4f46e5',
-          600: '#4338ca',
+        brand: {
+          50: '#f5f8ff',
+          100: '#e6efff',
+          300: '#7da9ff',
+          500: '#2563eb', // primary
+          600: '#1e40af',
         },
-        accent: '#06b6d4',
         ui: {
-          50: '#f8fafc',
-          900: '#0f172a',
+          bg: '#f8fafb',
+          surface: '#ffffff',
+          muted: '#64748b',
+        },
+        darkui: {
+          bg: '#0f1724',
+          surface: '#0b1220',
+          muted: '#94a3b8',
         },
       },
-      borderRadius: { xl: '1rem' },
-      spacing: { 9: '2.25rem' },
+      boxShadow: {
+        glass: '0 8px 30px rgba(16,24,40,0.08)',
+        'glass-dark': '0 8px 30px rgba(2,6,23,0.6)',
+      },
+      borderRadius: {
+        'xl-2': '14px',
+      },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms')],
 }

@@ -1,4 +1,22 @@
 {
+  "titles": {
+    "home": "Home  — Social Support",
+    "applicationForm": "Create Application  — Social Support"
+  },
+  "fillApplication": "Create Application",
+  "editApplication": "Update Application",
+  "noApplicationYet": "No applications yet",
+  "startNew": "Start a new social support application",
+  "updateExisting": "You already have application, you can update it easily",
+  "fill": "Fill",
+  "view": "View",
+  "prompt": "Prompt",
+  "suggestion": "Suggestion",
+  "suggestion_placeholder": "Your generated suggestion will appear here...",
+  "generating_suggestion": "Generating suggestion...",
+  "preview": "Preview",
+  "fillNow": "Fill now",
+  "disabled": "Disabled",
   "title": "Social Support Application",
   "next": "Next",
   "back": "Back",
@@ -6,7 +24,7 @@
   "save": "Save",
   "help_me_write": "Help me write",
   "accept": "Accept",
-  "edit": "Edit",
+  "edit": "Update",
   "discard": "Discard",
   "step": {
     "1": "Personal Info",
@@ -15,44 +33,34 @@
   },
   "messages": {
     "saved": "Saved locally",
-    "submitted": "Application submitted (mock)"
+    "submitted": "Application submitted"
   },
   "fields": {
     "name": "Full name",
-    "namePlaceholder": "Enter your full name",
     "nationalId": "National ID",
-    "nationalIdPlaceholder": "Enter national ID",
     "dob": "Date of birth",
     "gender": "Gender",
     "address": "Address",
-    "addressPlaceholder": "Street, building, flat...",
     "city": "City",
     "state": "State",
     "country": "Country",
     "phone": "Phone",
-    "phonePlaceholder": "Mobile or landline",
     "email": "Email",
     "emailPlaceholder": "you@example.com",
     "maritalStatus": "Marital Status",
     "dependents": "Dependents",
-    "dependentsPlaceholder": "Number of dependents",
     "employmentStatus": "Employment Status",
     "monthlyIncome": "Monthly Income",
-    "monthlyIncomePlaceholder": "Monthly income in local currency",
     "housingStatus": "Housing Status",
     "currentFinancialSituation": "Current financial situation",
-    "currentFinancialSituationPlaceholder": "Describe your current financial situation briefly",
     "employmentCircumstances": "Employment circumstances",
-    "employmentCircumstancesPlaceholder": "Describe your employment (hours, employer, contract…) ",
-    "reasonForApplying": "Reason for applying",
-    "reasonForApplyingPlaceholder": "Explain why you are applying for support"
+    "reasonForApplying": "Reason for applying"
   },
   "select": {
     "placeholder": "Select",
     "label": "Select"
   },
   "options": {
-    "select": "Select",
     "gender": {
       "male": "Male",
       "female": "Female"
@@ -75,6 +83,7 @@
     }
   },
   "errors": {
+    "required": "Field is required",
     "nameRequired": "Name is required",
     "nationalIdRequired": "National ID is required",
     "dobRequired": "Date of birth is required",

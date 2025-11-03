@@ -5,65 +5,71 @@
     aria-modal="true"
     role="dialog"
   >
-    <!-- backdrop -->
     <div class="absolute inset-0 bg-black/40" @click="close" aria-hidden="true"></div>
 
-    <!-- modal -->
     <div
       class="relative z-10 w-full max-w-xl bg-white dark:bg-slate-900 rounded-lg shadow p-4"
       role="document"
       aria-labelledby="help-title"
     >
       <div class="flex items-center justify-between mb-3">
-        <h3 id="help-title" class="text-lg font-semibold">{{ $t('help_me_write') }}</h3>
-        <button class="text-sm px-2 py-1" @click="close" aria-label="close">✕</button>
+        <h3 id="help-title" class="text-lg font-semibold">{{ t('help_me_write') }}</h3>
+        <BaseButton type="button" variant="ghost" size="sm" @click="close" aria-label="close">
+          ✕
+        </BaseButton>
       </div>
 
       <p class="text-sm text-slate-600 mb-3">
-        <strong>{{ $t('prompt') }}:</strong>
+        <strong>{{ t('prompt') }}:</strong>
         <span v-if="promptDisplay">{{ promptDisplay }}</span>
-        <span v-else class="italic text-slate-400">{{ examplePrompt }}</span>
+        <span v-else class="italic text-slate-400">{{ examplePromptLocalized }}</span>
       </p>
 
-      <!-- editable suggestion -->
-      <textarea
+      <BaseTextarea
         v-model="suggestion"
-        rows="7"
-        :placeholder="$t('suggestion_placeholder')"
-        class="w-full border rounded p-2 mb-3 bg-white dark:bg-slate-800 dark:text-slate-100"
-        :aria-label="$t('suggestion')"
-      ></textarea>
+        :rows="7"
+        :placeholder="t('suggestion_placeholder')"
+        class="w-full mb-3"
+        :aria-label="t('suggestion')"
+      />
 
       <div class="flex items-center justify-between gap-2">
         <div class="text-xs text-slate-500">
-          <span v-if="loading">{{ $t('generating_suggestion') }}</span>
+          <span v-if="loading">{{ t('generating_suggestion') }}</span>
           <span v-else-if="error" class="text-red-500">{{ error }}</span>
         </div>
 
         <div class="flex items-center gap-2">
-          <button type="button" class="px-3 py-1 border rounded" @click="close" :disabled="loading">
-            {{ $t('discard') }}
-          </button>
-
-          <!-- Edit triggers regeneration (explicit) -->
-          <button
+          <BaseButton
             type="button"
-            class="px-3 py-1 bg-gray-200 rounded"
+            variant="secondary"
+            size="sm"
+            @click="close"
+            :disabled="loading"
+          >
+            {{ t('discard') }}
+          </BaseButton>
+
+          <BaseButton
+            type="button"
+            variant="ghost"
+            size="sm"
             @click="fetchSuggestion"
             :disabled="loading"
             v-if="!loading"
           >
-            {{ $t('edit') }}
-          </button>
+            {{ t('edit') }}
+          </BaseButton>
 
-          <button
+          <BaseButton
             type="button"
-            class="px-3 py-1 bg-blue-600 text-white rounded"
+            variant="primary"
+            size="sm"
             @click="accept"
             :disabled="loading || !suggestion"
           >
-            {{ $t('accept') }}
-          </button>
+            {{ t('accept') }}
+          </BaseButton>
         </div>
       </div>
     </div>
@@ -72,12 +78,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import { openAI } from '@/plugins/openai'
 import { useI18n } from 'vue-i18n'
-
+import { openAI } from '@/plugins/openai'
 const { t } = useI18n()
 
-/* state */
 const open = ref(false)
 const field = ref('')
 const prompt = ref('')
@@ -86,11 +90,11 @@ const loading = ref(false)
 const error = ref('')
 
 const examplePrompt = 'I am unemployed with no income. Help me describe my financial hardship.'
+const examplePromptLocalized = computed(() => t('example_prompt') ?? examplePrompt)
 
 const promptDisplay = computed(() => (prompt.value ? prompt.value : ''))
 
-/* simple in-memory cache so we don't regenerate on every open
-   persisted on window to survive HMR during dev */
+/* in-memory cache to avoid re-generating for same field */
 const globalCache = ((window as any).__helpSuggestions = (window as any).__helpSuggestions || {})
 
 let listenerAttached = (window as any).__helpModalListenerAttached || false
@@ -102,11 +106,12 @@ function onOpen(e: Event) {
   error.value = ''
   loading.value = false
 
-  // load cached suggestion if present — do NOT call API automatically
+  // load cached suggestion if present — do NOT call API automatically when cached
   const cached = field.value ? globalCache[field.value] : undefined
   if (cached) {
     suggestion.value = cached
-    return (open.value = true)
+    open.value = true
+    return
   }
 
   suggestion.value = ''
@@ -139,6 +144,7 @@ function accept() {
 }
 
 async function fetchSuggestion() {
+  // clear previous value
   suggestion.value = ''
   loading.value = true
   error.value = ''
@@ -146,10 +152,10 @@ async function fetchSuggestion() {
   try {
     if (import.meta.env.VITE_MOCK_OPENAI === 'true') {
       await new Promise((r) => setTimeout(r, 400))
-      suggestion.value = `Mock suggestion: "${prompt.value || examplePrompt}"`
+      suggestion.value = `Mock suggestion: "${prompt.value || examplePromptLocalized.value}"`
     } else {
-      const svc = openAI()
-      const text = await svc.generate(prompt.value || examplePrompt, 10000)
+      const OpenAI = openAI()
+      const text = await OpenAI.generate(prompt.value || examplePromptLocalized.value, 10000)
       suggestion.value = (text || '').trim()
     }
   } catch (err: any) {
@@ -161,7 +167,7 @@ async function fetchSuggestion() {
   }
 }
 
-/* event wiring — single global listener to avoid duplicates across HMR */
+/* single global listener to avoid duplicates */
 onMounted(() => {
   if (!listenerAttached) {
     window.addEventListener('open-help', onOpen as EventListener)
@@ -177,10 +183,3 @@ onBeforeUnmount(() => {
   }
 })
 </script>
-
-<style scoped>
-textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-}
-</style>

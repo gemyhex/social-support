@@ -2,7 +2,6 @@
   <div>
     <h2 class="text-lg font-semibold mb-4">{{ t('step.2') }}</h2>
 
-    <!-- Presentational form renderer -->
     <BaseForm :fields="fields" :schema="schema" :initial-values="initialValues" :columns="2" />
   </div>
 </template>
@@ -12,23 +11,20 @@ import { watch } from 'vue'
 import * as yup from 'yup'
 import { useI18n } from 'vue-i18n'
 import { useFormStore } from '@/stores/useFormStore'
-import BaseForm from '@/components/BaseForm.vue'
 import { useDynamicForm } from '@/composables/useForm'
 import { defineExpose } from 'vue'
 
 const { t } = useI18n()
 const store = useFormStore()
 
-/* Defensive initial values from Pinia */
 const initialValues = {
-  maritalStatus: store.form.maritalStatus ?? '',
-  dependents: store.form.dependents ?? 0,
-  employmentStatus: store.form.employmentStatus ?? '',
-  monthlyIncome: store.form.monthlyIncome ?? null,
-  housingStatus: store.form.housingStatus ?? '',
+  maritalStatus: store.storage.draft.maritalStatus ?? '',
+  dependents: store.storage.draft.dependents ?? 0,
+  employmentStatus: store.storage.draft.employmentStatus ?? '',
+  monthlyIncome: store.storage.draft.monthlyIncome ?? null,
+  housingStatus: store.storage.draft.housingStatus ?? '',
 }
 
-/* options */
 const maritalOptions = [
   { label: t('options.marital.single'), value: 'single' },
   { label: t('options.marital.married'), value: 'married' },
@@ -48,7 +44,6 @@ const housingOptions = [
   { label: t('options.housing.homeless'), value: 'homeless' },
 ]
 
-/* fields for BaseForm (presentational) — add placeholder for selects */
 const fields = [
   {
     name: 'maritalStatus',
@@ -73,7 +68,6 @@ const fields = [
   },
 ]
 
-/* validation schema (Yup) with transforms for numeric fields */
 const schema = yup.object({
   maritalStatus: yup.string().required(t('errors.maritalRequired')),
   dependents: yup
@@ -89,24 +83,18 @@ const schema = yup.object({
   housingStatus: yup.string().required(t('errors.housingRequired')),
 })
 
-/*
- Use the composable that encapsulates useForm().
- It returns { validateStep, values, errors, focusFirstInvalid, ... }.
-*/
 const { validateStep, values } = useDynamicForm({ validationSchema: schema, initialValues })
 
-/* sync live values into Pinia immediately */
 watch(
   values,
-  (nv) => {
-    if (!nv) return
-    Object.keys(store.form).forEach((k) => {
-      if (nv[k] !== undefined) store.form[k] = nv[k]
+  (newVal) => {
+    if (!newVal) return
+    Object.keys(store.storage.draft).forEach((key) => {
+      if (newVal[key] !== undefined) store.storage.draft[key] = newVal[key]
     })
   },
   { deep: true, immediate: true },
 )
 
-/* expose validateStep to parent wizard */
 defineExpose({ validateStep })
 </script>
