@@ -88,7 +88,7 @@ yarn preview
 Set `VITE_OPENAI_KEY` in `.env`.
 
 The client will call OpenAI directly.
-⚠️ Not recommended for production — use a secure backend proxy.
+Not recommended for production — use a secure backend proxy.
 
 ---
 
