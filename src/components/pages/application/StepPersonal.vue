@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-lg font-semibold mb-4">{{ t('step.1') }}</h2>
+    <h2 class="text-lg font-semibold mb-4">{{ t('steps.personal') }}</h2>
 
     <BaseForm :fields="fields" :schema="schema" :initial-values="initialValues" :columns="2" />
   </div>
@@ -54,14 +54,14 @@ const fields = [
 ]
 
 const schema = yup.object({
-  name: yup.string().required(t('errors.nameRequired')),
-  nationalId: yup.string().required(t('errors.nationalIdRequired')),
-  dob: yup.string().required(t('errors.dobRequired')),
-  gender: yup.string().required(t('errors.genderRequired')),
-  address: yup.string().required(t('errors.addressRequired')),
-  city: yup.string().required(t('errors.cityRequired')),
-  country: yup.string().required(t('errors.countryRequired')),
-  email: yup.string().required(t('errors.emailRequired')).email(t('errors.invalidEmail')),
+  name: yup.string().required(t('validation.nameRequired')),
+  nationalId: yup.string().required(t('validation.nationalIdRequired')),
+  dob: yup.string().required(t('validation.dobRequired')),
+  gender: yup.string().required(t('validation.genderRequired')),
+  address: yup.string().required(t('validation.addressRequired')),
+  city: yup.string().required(t('validation.cityRequired')),
+  country: yup.string().required(t('validation.countryRequired')),
+  email: yup.string().required(t('validation.emailRequired')).email(t('validation.invalidEmail')),
 })
 
 const { validateStep, values } = useDynamicForm({ validationSchema: schema, initialValues })

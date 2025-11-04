@@ -2,9 +2,18 @@
   <section class="w-full max-w-3xl mx-auto">
     <BaseCard>
       <template #default>
-        <ProgressBar :step="formStore.activeStep" :steps="steps.length" class="mb-4" />
+        <ProgressBar
+          :step="formStore.activeStep"
+          :steps="steps.length"
+          :isValid="isCurrentStepValid"
+          class="mb-4"
+        />
 
-        <WizardStepper :step="formStore.activeStep" :labels="stepLabels" />
+        <WizardStepper
+          :step="formStore.activeStep"
+          :labels="stepLabels"
+          :valid-steps="validSteps"
+        />
 
         <component
           :is="currentStep.component"
@@ -13,6 +22,7 @@
           class="mt-4"
         />
       </template>
+
       <template #actions>
         <WizardNav
           class="mt-4"
@@ -30,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useFormStore } from '@/stores/useFormStore'
 import StepPersonal from '@/components/pages/application/StepPersonal.vue'
@@ -42,18 +52,56 @@ import router from '@/router'
 const { t } = useI18n()
 const formStore = useFormStore()
 const toast = useToast()
-const stepRef = ref<any>(null)
 
+const stepRef = ref<any>(null)
 const loadingLocal = ref(false)
 
 const steps = [
-  { id: 1, component: StepPersonal, label: t('step.1') },
-  { id: 2, component: StepFamilyFinancial, label: t('step.2') },
-  { id: 3, component: StepSituation, label: t('step.3') },
+  { id: 1, component: StepPersonal, labelKey: 'steps.personal' },
+  { id: 2, component: StepFamilyFinancial, labelKey: 'steps.family' },
+  { id: 3, component: StepSituation, labelKey: 'steps.situation' },
 ]
-
-const stepLabels = computed(() => steps.map((s) => s.label))
+const validSteps = ref<boolean[]>(steps.map(() => false))
+const stepLabels = computed(() => steps.map((s) => t(s.labelKey)))
 const currentStep = computed(() => steps.find((s) => s.id === formStore.activeStep) ?? steps[0])
+
+// check current step validity
+const isCurrentStepValid = ref(false)
+// Revalidate the active step whenever form values change
+
+watch(
+  () => formStore.storage.draft,
+  async () => {
+    const validate = stepRef.value?.validateStep
+    if (typeof validate === 'function') {
+      try {
+        const result = await validate()
+        validSteps.value[formStore.activeStep - 1] = !!(result?.valid ?? result)
+        isCurrentStepValid.value = !!(result?.valid ?? result)
+      } catch {
+        validSteps.value[formStore.activeStep - 1] = false
+        isCurrentStepValid.value = false
+      }
+    }
+  },
+  { deep: true, immediate: true },
+)
+
+// 🔹 also validate again when user switches steps
+watch(
+  () => formStore.activeStep,
+  async () => {
+    const validate = stepRef.value?.validateStep
+    if (typeof validate === 'function') {
+      try {
+        const result = await validate()
+        validSteps.value[formStore.activeStep - 1] = !!(result?.valid ?? result)
+      } catch {
+        validSteps.value[formStore.activeStep - 1] = false
+      }
+    }
+  },
+)
 
 async function onNext() {
   const validate = stepRef.value?.validateStep

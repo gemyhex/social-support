@@ -59,15 +59,17 @@ onMounted(() => {
   checkForSubmission()
 })
 
-const title = computed(() => (hasApplication.value ? t('editApplication') : t('fillApplication')))
-const subtitle = computed(() => (hasApplication.value ? t('updateExisting') : t('startNew')))
-const actionLabel = computed(() => (hasApplication.value ? t('edit') : t('fill')))
+const title = computed(() =>
+  hasApplication.value ? t('pages.home.editApplication') : t('pages.home.fillApplication'),
+)
+const subtitle = computed(() =>
+  hasApplication.value ? t('pages.home.updateExisting') : t('pages.home.startNew'),
+)
+const actionLabel = computed(() => (hasApplication.value ? t('buttons.edit') : t('buttons.fill')))
 
 async function goToFill() {
-  // prevent double actions while transitioning
   if (loading.value) return
   if (hasApplication.value) {
-    // load submitted snapshot into draft so form shows existing values for editing
     store.loadSubmissionIntoForm()
   }
   await router.push({ name: 'ApplicationForm' })

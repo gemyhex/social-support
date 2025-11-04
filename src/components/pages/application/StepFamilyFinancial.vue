@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-lg font-semibold mb-4">{{ t('step.2') }}</h2>
+    <h2 class="text-lg font-semibold mb-4">{{ t('steps.family') }}</h2>
 
     <BaseForm :fields="fields" :schema="schema" :initial-values="initialValues" :columns="2" />
   </div>
@@ -69,18 +69,18 @@ const fields = [
 ]
 
 const schema = yup.object({
-  maritalStatus: yup.string().required(t('errors.maritalRequired')),
+  maritalStatus: yup.string().required(t('validation.maritalRequired')),
   dependents: yup
     .number()
-    .min(0, t('errors.invalidDependents'))
+    .min(0, t('validation.invalidDependents'))
     .nullable()
     .transform((v, o) => (o === '' ? null : v)),
-  employmentStatus: yup.string().required(t('errors.employmentRequired')),
+  employmentStatus: yup.string().required(t('validation.employmentRequired')),
   monthlyIncome: yup
     .number()
     .nullable()
     .transform((v, o) => (o === '' ? null : v)),
-  housingStatus: yup.string().required(t('errors.housingRequired')),
+  housingStatus: yup.string().required(t('validation.housingRequired')),
 })
 
 const { validateStep, values } = useDynamicForm({ validationSchema: schema, initialValues })

@@ -1,6 +1,6 @@
 export interface ApplicationForm {
   name: string;
-  nationalId: string;
+  nationalID: string;
   dob: string;
   gender: string;
   address: string;

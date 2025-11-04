@@ -10,11 +10,10 @@
         @click="emitBack"
         aria-label="Back"
       >
-        {{ t('back') }}
+        {{ t('buttons.back') }}
       </BaseButton>
     </div>
 
-    <!-- Right side actions -->
     <div class="flex items-center gap-2">
       <BaseButton
         v-if="step === stepsCount"
@@ -25,7 +24,7 @@
         @click="emitSave"
         aria-label="Save"
       >
-        {{ t('save') }}
+        {{ t('buttons.save') }}
       </BaseButton>
 
       <BaseButton
@@ -37,7 +36,7 @@
         @click="emitNext"
         aria-label="Next"
       >
-        {{ t('next') }}
+        {{ t('buttons.next') }}
       </BaseButton>
 
       <BaseButton
@@ -49,7 +48,7 @@
         @click="emitSubmit"
         aria-label="Submit"
       >
-        {{ t('submit') }}
+        {{ t('buttons.submit') }}
       </BaseButton>
     </div>
   </div>

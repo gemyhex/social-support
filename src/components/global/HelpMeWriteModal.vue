@@ -13,30 +13,29 @@
       aria-labelledby="help-title"
     >
       <div class="flex items-center justify-between mb-3">
-        <h3 id="help-title" class="text-lg font-semibold">{{ t('help_me_write') }}</h3>
+        <h3 id="help-title" class="text-lg font-semibold">{{ tTitle }}</h3>
         <BaseButton type="button" variant="ghost" size="sm" @click="close" aria-label="close">
           ✕
         </BaseButton>
       </div>
 
       <p class="text-sm text-slate-600 mb-3">
-        <strong>{{ t('prompt') }}:</strong>
-        <span v-if="promptDisplay">{{ promptDisplay }}</span>
-        <span v-else class="italic text-slate-400">{{ examplePromptLocalized }}</span>
+        <strong>{{ promptLabel }}</strong>
+        <span v-if="promptDisplay" class="ml-1">{{ promptDisplay }}</span>
+        <span v-else class="italic text-slate-400 ml-1">{{ examplePromptLocalized }}</span>
       </p>
 
       <BaseTextarea
         v-model="suggestion"
         :rows="7"
-        :placeholder="t('suggestion_placeholder')"
+        :placeholder="tPlaceholder"
         class="w-full mb-3"
-        :aria-label="t('suggestion')"
+        :aria-label="tSuggestionLabel"
       />
 
       <div class="flex items-center justify-between gap-2">
         <div class="text-xs text-slate-500">
-          <span v-if="loading">{{ t('generating_suggestion') }}</span>
-          <span v-else-if="error" class="text-red-500">{{ error }}</span>
+          <span v-if="loading">{{ tGenerating }}</span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -47,7 +46,7 @@
             @click="close"
             :disabled="loading"
           >
-            {{ t('discard') }}
+            {{ tDiscard }}
           </BaseButton>
 
           <BaseButton
@@ -58,7 +57,7 @@
             :disabled="loading"
             v-if="!loading"
           >
-            {{ t('edit') }}
+            {{ tEdit }}
           </BaseButton>
 
           <BaseButton
@@ -68,7 +67,7 @@
             @click="accept"
             :disabled="loading || !suggestion"
           >
-            {{ t('accept') }}
+            {{ tAccept }}
           </BaseButton>
         </div>
       </div>
@@ -80,6 +79,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { openAI } from '@/plugins/openai'
+
 const { t } = useI18n()
 
 const open = ref(false)
@@ -90,7 +90,18 @@ const loading = ref(false)
 const error = ref('')
 
 const examplePrompt = 'I am unemployed with no income. Help me describe my financial hardship.'
-const examplePromptLocalized = computed(() => t('example_prompt') ?? examplePrompt)
+const examplePromptLocalized = computed(() => t('ai.examplePrompt') ?? examplePrompt)
+
+const tTitle = computed(() => t('buttons.helpMeWrite') ?? t('ai.helpMeWrite') ?? 'Help me write')
+const tPlaceholder = computed(
+  () => t('ai.suggestion.placeholder') ?? t('ai.suggestion.placeholder'),
+)
+const tGenerating = computed(() => t('ai.suggestion.generating') ?? t('ai.suggestion.generating'))
+const tSuggestionLabel = computed(() => t('ai.suggestion.label') ?? t('ai.suggestion.label'))
+const tDiscard = computed(() => t('buttons.discard') ?? 'Discard')
+const tEdit = computed(() => t('buttons.edit') ?? 'Edit')
+const tAccept = computed(() => t('buttons.accept') ?? 'Accept')
+const promptLabel = computed(() => t('ai.prompt') ?? t('ai.helpMeWrite') ?? 'Prompt')
 
 const promptDisplay = computed(() => (prompt.value ? prompt.value : ''))
 
@@ -106,7 +117,7 @@ function onOpen(e: Event) {
   error.value = ''
   loading.value = false
 
-  // load cached suggestion if present — do NOT call API automatically when cached
+  // load cached suggestion if present  don't call API automatically when cached
   const cached = field.value ? globalCache[field.value] : undefined
   if (cached) {
     suggestion.value = cached
@@ -155,19 +166,18 @@ async function fetchSuggestion() {
       suggestion.value = `Mock suggestion: "${prompt.value || examplePromptLocalized.value}"`
     } else {
       const OpenAI = openAI()
-      const text = await OpenAI.generate(prompt.value || examplePromptLocalized.value, 10000)
+      const text = await OpenAI.generate(prompt.value || examplePromptLocalized.value)
       suggestion.value = (text || '').trim()
     }
   } catch (err: any) {
-    console.error('fetchSuggestion error', err)
     error.value =
-      err?.message || t('errors.fetchSuggestionFailed') || 'Failed to generate suggestion'
+      err?.message || t('ai.errors.fetchSuggestionFailed') || 'Failed to generate suggestion'
   } finally {
     loading.value = false
   }
 }
 
-/* single global listener to avoid duplicates */
+/* to avoid duplicates */
 onMounted(() => {
   if (!listenerAttached) {
     window.addEventListener('open-help', onOpen as EventListener)

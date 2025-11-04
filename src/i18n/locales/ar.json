@@ -1,118 +1,128 @@
 {
-  "titles": {
-    "home": "الرئيسية — الدعم الاجتماعي",
-    "applicationForm": "تعبئة الطلب — الدعم الاجتماعي"
+  "meta": {
+    "appTitle": "طلب الدعم الاجتماعي",
+    "favTitle": "الدعم الاجتماعي"
   },
-  "fillApplication": "تعبئة الطلب",
-  "editApplication": "تعديل الطلب",
-  "startNew": "ابدأ طلب دعم اجتماعي جديد",
-  "updateExisting": "قم بتحديث طلبك الحالي",
-  "fill": "تعبئة",
-  "view": "عرض",
-  "prompt": "المطالبة",
-  "suggestion": "الاقتراح",
-  "suggestion_placeholder": "سيظهر الاقتراح الناتج هنا...",
-  "generating_suggestion": "جاري إنشاء الاقتراح...",
-  "preview": "معاينة",
-  "fillNow": "ابدأ الآن",
-  "disabled": "غير متاح",
-  "title": "طلب دعم اجتماعي",
-  "next": "التالي",
-  "back": "العودة",
-  "submit": "إرسال الطلب",
-  "save": "حفظ",
-  "help_me_write": "ساعدني في الكتابة",
-  "accept": "قبول",
-  "edit": "تعديل",
-  "discard": "تجاهل",
-  "generating suggestion": "يتم جلب الاقتراح",
-  "step": {
-    "1": "المعلومات الشخصية",
-    "2": "العائلة والوضع المالي",
-    "3": "الحالة الاجتماعية/الظروف"
+  "titles": {
+    "home": "الصفحة الرئيسية — الدعم الاجتماعي",
+    "applicationForm": "إنشاء طلب — الدعم الاجتماعي",
+    "applicationEdit": "تحديث الطلب — الدعم الاجتماعي"
+  },
+  "pages": {
+    "home": {
+      "fillApplication": "إنشاء طلب",
+      "editApplication": "تحديث الطلب",
+      "startNew": "ابدأ طلب دعم اجتماعي جديد",
+      "updateExisting": "لديك طلب سابق — يمكنك تحديثه بسهولة",
+      "disabled": "معطل"
+    },
+    "application": {
+      "create": "إنشاء طلب",
+      "edit": "تحديث الطلب"
+    }
+  },
+  "buttons": {
+    "primary": "رئيسي",
+    "next": "التالي",
+    "back": "السابق",
+    "submit": "إرسال الطلب",
+    "save": "حفظ",
+    "fill": "تعبئة",
+    "fillNow": "ابدأ الآن",
+    "edit": "تعديل",
+    "discard": "إلغاء",
+    "accept": "قبول",
+    "helpMeWrite": "ساعدني في الكتابة"
+  },
+  "card": {
+    "disabledLabel": "معطل"
+  },
+  "steps": {
+    "personal": "المعلومات الشخصية",
+    "family": "معلومات الأسرة والمال",
+    "situation": "وصف الحالة"
   },
   "messages": {
-    "saved": "تم الحفظ محليًا",
-    "submitted": "تم إرسال الطلب"
+    "saved": "تم الحفظ محليًا بنجاح",
+    "submitted": "تم إرسال الطلب بنجاح",
+    "fixErrors": "يرجى تصحيح الأخطاء قبل المتابعة"
   },
   "fields": {
     "name": "الاسم الكامل",
-    "namePlaceholder": "أدخل اسمك الكامل",
-    "nationalId": "رقم الهوية الوطنية",
-    "nationalIdPlaceholder": "أدخل رقم الهوية الوطنية",
+    "nationalId": "الرقم القومي",
     "dob": "تاريخ الميلاد",
     "gender": "النوع",
     "address": "العنوان",
-    "addressPlaceholder": "الشارع، المبنى، الشقة...",
     "city": "المدينة",
-    "state": "المنطقة/المقاطعة",
-    "country": "البلد",
-    "phone": "الهاتف",
-    "phonePlaceholder": "هاتف جوال أو أرضي",
+    "state": "المنطقة / المحافظة",
+    "country": "الدولة",
+    "phone": "رقم الهاتف",
     "email": "البريد الإلكتروني",
-    "emailPlaceholder": "you@example.com",
     "maritalStatus": "الحالة الاجتماعية",
-    "dependents": "المعالون",
-    "dependentsPlaceholder": "عدد المعالين",
-    "employmentStatus": "حالة التوظيف",
+    "dependents": "عدد المعالين",
+    "employmentStatus": "حالة العمل",
     "monthlyIncome": "الدخل الشهري",
-    "monthlyIncomePlaceholder": "الدخل الشهري بالعملة المحلية",
     "housingStatus": "حالة السكن",
     "currentFinancialSituation": "الوضع المالي الحالي",
-    "currentFinancialSituationPlaceholder": "صف وضعك المالي الحالي بإيجاز",
     "employmentCircumstances": "ظروف العمل",
-    "employmentCircumstancesPlaceholder": "صف ظروف عملك (ساعات العمل، جهة العمل، العقد...)",
-    "reasonForApplying": "سبب تقديم الطلب",
-    "reasonForApplyingPlaceholder": "اشرح سبب تقدمك بطلب الدعم"
-  },
-  "select": {
-    "placeholder": "اختر",
-    "label": "اختر"
+    "reasonForApplying": "سبب التقديم",
+    "placeholders": {
+      "select": "اختر"
+    }
   },
   "options": {
-    "select": "اختر",
     "gender": {
       "male": "ذكر",
       "female": "أنثى"
     },
     "marital": {
-      "single": "أعزب/عزباء",
-      "married": "متزوج/متزوجة",
-      "divorced": "مطلق/مطلقة"
+      "single": "أعزب",
+      "married": "متزوج",
+      "divorced": "مطلّق"
     },
     "employment": {
       "unemployed": "عاطل عن العمل",
-      "employed": "موظف/موظفة",
-      "selfEmployed": "يعمل لحسابه الخاص"
+      "employed": "موظف",
+      "selfEmployed": "عمل حر"
     },
     "housing": {
-      "own": "مِلك",
+      "own": "ملك",
       "rent": "إيجار",
       "livingWithFamily": "يسكن مع العائلة",
       "homeless": "بلا مأوى"
     }
   },
-  "errors": {
-    "required": "الحقل مطلوب",
+  "validation": {
+    "required": "هذا الحقل مطلوب",
     "nameRequired": "الاسم مطلوب",
-    "nationalIdRequired": "رقم الهوية الوطنية مطلوب",
+    "nationalIdRequired": "الرقم القومي مطلوب",
     "dobRequired": "تاريخ الميلاد مطلوب",
     "genderRequired": "النوع مطلوب",
     "addressRequired": "العنوان مطلوب",
     "cityRequired": "المدينة مطلوبة",
-    "countryRequired": "البلد مطلوب",
+    "countryRequired": "الدولة مطلوبة",
     "emailRequired": "البريد الإلكتروني مطلوب",
-    "invalidEmail": "عنوان بريد إلكتروني غير صالح",
+    "invalidEmail": "البريد الإلكتروني غير صالح",
     "maritalRequired": "الحالة الاجتماعية مطلوبة",
-    "invalidDependents": "عدد معالين غير صالح",
-    "employmentRequired": "حالة التوظيف مطلوبة",
+    "invalidDependents": "عدد المعالين غير صالح",
+    "employmentRequired": "حالة العمل مطلوبة",
     "housingRequired": "حالة السكن مطلوبة",
-    "moreDetail": "يرجى تقديم مزيد من التفاصيل",
-    "fetchSuggestionFailed": "فشل في إنشاء الاقتراح. يرجى المحاولة لاحقًا."
+    "moreDetail": "يرجى تقديم مزيد من التفاصيل"
   },
   "ai": {
+    "prompt": "النص المطلوب",
+    "helpMeWrite": "ساعدني في الكتابة",
+    "examplePrompt": "أنا عاطل عن العمل وليس لدي دخل. ساعدني في وصف وضعي المالي الصعب.",
     "prompts": {
-      "suggestionTemplate": "يرجى كتابة فقرة موجزة ومتعاطفة من 3-5 جمل لـ \"{field}\". المحتوى الحالي: \"{current}\". حافظ على الوضوح والاحترام."
+      "suggestionTemplate": "يرجى كتابة فقرة قصيرة ومتعاطفة من 3 إلى 5 جمل لـ \"{field}\". المحتوى الحالي: \"{current}\". اجعلها واضحة ومحترمة."
+    },
+    "suggestion": {
+      "label": "الاقتراح",
+      "placeholder": "سيظهر الاقتراح الذي تم إنشاؤه هنا...",
+      "generating": "جاري إنشاء الاقتراح..."
+    },
+    "errors": {
+      "fetchSuggestionFailed": "فشل في إنشاء الاقتراح. يرجى المحاولة لاحقًا."
     }
   }
 }

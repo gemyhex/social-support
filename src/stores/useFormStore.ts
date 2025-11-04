@@ -1,13 +1,11 @@
 import { defineStore } from 'pinia'
 import { reactive, toRefs, watch, computed } from 'vue'
-
+import { ApplicationForm } from '@/types/application'
 const STORAGE_KEY = 'social_application'
 
-type FormShape = Record<string, any>
-
-const defaultForm = (): FormShape => ({
+const defaultForm = (): ApplicationForm => ({
   name: '',
-  nationalId: '',
+  nationalID: '',
   dob: '',
   gender: '',
   address: '',
@@ -26,15 +24,21 @@ const defaultForm = (): FormShape => ({
   reasonForApplying: '',
 })
 
+type StorageType = {
+  draft: ApplicationForm
+  submitted: ApplicationForm | null
+  submittedAt: string | null
+}
+
 export const useFormStore = defineStore('form', () => {
   const state = reactive({
     activeStep: 1,
     loading: false,
     storage: {
       draft: defaultForm(),
-      submitted: null as FormShape | null,
+      submitted: null as ApplicationForm | null,
       submittedAt: null as string | null,
-    },
+    } as StorageType,
   })
 
   const raw = localStorage.getItem(STORAGE_KEY)
@@ -54,17 +58,13 @@ export const useFormStore = defineStore('form', () => {
     { deep: true },
   )
 
-  // -------------------------
-  // helpers for form editing
-  // -------------------------
-  function setField(name: string, value: any) {
+  function setField<K extends keyof ApplicationForm>(name: K, value: ApplicationForm[K]) {
     state.storage.draft[name] = value
   }
 
-  function setFields(values: FormShape) {
-    Object.entries(values || {}).forEach(([k, v]) => {
-      state.storage.draft[k] = v
-    })
+
+  function setFields(values: Partial<ApplicationForm>) {
+    state.storage.draft = { ...state.storage.draft, ...values }
   }
 
   function manualSave() {
@@ -77,9 +77,6 @@ export const useFormStore = defineStore('form', () => {
     manualSave()
   }
 
-  // -------------------------
-  // submission helpers
-  // -------------------------
   const hasSubmission = computed(() => state.storage.submitted !== null)
 
   function saveSubmissionSnapshot() {
@@ -106,9 +103,6 @@ export const useFormStore = defineStore('form', () => {
     manualSave()
   }
 
-  // -------------------------
-  // navigation & validation
-  // -------------------------
   async function validateAndNext(validateFn?: (() => Promise<any>) | undefined, maxStep = 3) {
     if (state.loading) return false
     state.loading = true

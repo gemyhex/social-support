@@ -8,9 +8,9 @@ import BaseSelect from '@/components/base/BaseSelect.vue';
 import BaseTextarea from '@/components/base/BaseTextarea.vue';
 import ProgressBar from '@/components/global/ProgressBar.vue';
 import FieldItem from '@/components/base/BaseFormField.vue'
-import WizardNav from '@/components/wizard/WizardNav.vue';
-import WizardStepper from '@/components/wizard/WizardStepper.vue';
-import WizardContainer from '@/components/wizard/WizardContainer.vue';
+import WizardNav from '@/components/wizard/actions.vue';
+import WizardStepper from '@/components/wizard/stepper.vue';
+import WizardContainer from '@/components/wizard/container.vue';
 import HelpMeWriteModal from '@/components/global/HelpMeWriteModal.vue';
 import Toasts from '@/components/global/Toasts.vue';
 

@@ -1,5 +1,5 @@
 <template>
-  <div data-toast-root class="fixed bottom-4 right-4 z-50 space-y-2 pointer-events-none">
+  <div data-toast-root class="toast-wrapper fixed top-4 right-4 space-y-2 pointer-events-none">
     <div
       v-for="t in toasts"
       :key="t.id"
@@ -29,3 +29,9 @@ const toastClass = (type: string | undefined) =>
       ? 'bg-rose-600 text-white'
       : 'bg-slate-800 text-white'
 </script>
+
+<style scoped>
+.toast-wrapper {
+  z-index: 9999;
+}
+</style>

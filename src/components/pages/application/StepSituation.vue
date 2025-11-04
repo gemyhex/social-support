@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-lg font-semibold mb-4">{{ t('step.3') }}</h2>
+    <h2 class="text-lg font-semibold mb-4">{{ t('steps.situation') }}</h2>
 
     <BaseForm :fields="fields" :columns="1">
       <template #field-action="{ fieldName }">
@@ -12,7 +12,7 @@
           type="button"
           @click="openHelp(fieldName)"
         >
-          {{ t('help_me_write') }}
+          {{ t('buttons.helpMeWrite') }}
         </BaseButton>
       </template>
     </BaseForm>
@@ -26,7 +26,6 @@ import { useI18n } from 'vue-i18n'
 import { useFormStore } from '@/stores/useFormStore'
 import { useDynamicForm } from '@/composables/useForm'
 import { useApplySuggestion } from '@/composables/useApplySuggestion'
-
 import { defineExpose } from 'vue'
 
 const store = useFormStore()
@@ -57,10 +56,13 @@ const initialValues = {
 const schema = yup.object({
   currentFinancialSituation: yup
     .string()
-    .min(10, t('errors.moreDetail'))
-    .required(t('errors.required')),
-  employmentCircumstances: yup.string().min(5, t('errors.moreDetail')).nullable(),
-  reasonForApplying: yup.string().min(10, t('errors.moreDetail')).required(t('errors.required')),
+    .min(10, t('validation.moreDetail'))
+    .required(t('validation.required')),
+  employmentCircumstances: yup.string().min(5, t('validation.moreDetail')).nullable(),
+  reasonForApplying: yup
+    .string()
+    .min(10, t('validation.moreDetail'))
+    .required(t('validation.required')),
 })
 
 const { validateStep, values, setFieldValue } = useDynamicForm({

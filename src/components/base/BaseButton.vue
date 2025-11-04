@@ -53,15 +53,15 @@ const buttonClass = computed(() => {
     .trim()
 })
 
-// Filter attrs: forward everything except event listeners (keys starting with "on")
+// Filter attr (keys starting with on)
 const forwardedAttrs = computed(() => {
   const out: Record<string, any> = {}
   Object.entries(attrs).forEach(([k, v]) => {
-    // skip event listeners that start with "on" (Vue normalized attr names)
+    // skip event listeners that start with on
     if (/^on[A-Z]/.test(k)) return
     out[k] = v
   })
-  // ensure type/class/id/aria from props or attrs are preserved:
+  // ensure type/class/id/aria from props or attrs are preserved
   if (!out.type) out.type = props.type
   return out
 })
