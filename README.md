@@ -1,4 +1,4 @@
-# Social Support Application (Vue 3 + Pinia)
+# Social Support Application
 
 A responsive, accessible, multi-step social support application with local draft saving and an OpenAI-powered "help me write" suggestion feature.
 
