@@ -49,7 +49,7 @@
   },
   "fields": {
     "name": "الاسم الكامل",
-    "nationalId": "الرقم القومي",
+    "nationalID": "الرقم القومي",
     "dob": "تاريخ الميلاد",
     "gender": "النوع",
     "address": "العنوان",
@@ -95,7 +95,7 @@
   "validation": {
     "required": "هذا الحقل مطلوب",
     "nameRequired": "الاسم مطلوب",
-    "nationalIdRequired": "الرقم القومي مطلوب",
+    "nationalIDRequired": "الرقم القومي مطلوب",
     "dobRequired": "تاريخ الميلاد مطلوب",
     "genderRequired": "النوع مطلوب",
     "addressRequired": "العنوان مطلوب",

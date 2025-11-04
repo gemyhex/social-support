@@ -49,7 +49,7 @@
   },
   "fields": {
     "name": "Full name",
-    "nationalId": "National ID",
+    "nationalID": "National ID",
     "dob": "Date of birth",
     "gender": "Gender",
     "address": "Address",
@@ -95,7 +95,7 @@
   "validation": {
     "required": "Field Required",
     "nameRequired": "Name Required",
-    "nationalIdRequired": "National ID Required",
+    "nationalIDRequired": "National ID Required",
     "dobRequired": "Date of birth Required",
     "genderRequired": "Gender Required",
     "addressRequired": "Address Required",

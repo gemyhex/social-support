@@ -19,7 +19,7 @@ const store = useFormStore()
 
 const initialValues = {
   name: store.storage.draft.name ?? '',
-  nationalId: store.storage.draft.nationalId ?? '',
+  nationalID: store.storage.draft.nationalID ?? '',
   dob: store.storage.draft.dob ?? '',
   gender: store.storage.draft.gender ?? '',
   address: store.storage.draft.address ?? '',
@@ -37,7 +37,7 @@ const genderOptions = [
 
 const fields = [
   { name: 'name', label: t('fields.name'), type: 'text' },
-  { name: 'nationalId', label: t('fields.nationalId'), type: 'text' },
+  { name: 'nationalID', label: t('fields.nationalID'), type: 'text' },
   { name: 'dob', label: t('fields.dob'), type: 'date', inputType: 'date' },
   {
     name: 'gender',
@@ -55,7 +55,7 @@ const fields = [
 
 const schema = yup.object({
   name: yup.string().required(t('validation.nameRequired')),
-  nationalId: yup.string().required(t('validation.nationalIdRequired')),
+  nationalID: yup.string().required(t('validation.nationalIDRequired')),
   dob: yup.string().required(t('validation.dobRequired')),
   gender: yup.string().required(t('validation.genderRequired')),
   address: yup.string().required(t('validation.addressRequired')),
